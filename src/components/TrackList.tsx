@@ -15,7 +15,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Filter } from './Filter';
-import { GenreFilter } from './GenreFilter';
 import { TrackItem } from './TrackItem';
 import { Pagination } from './Pagination';
 import { TrackItemSkeleton } from './TrackItemSkeleton';
@@ -48,10 +47,10 @@ export function TrackList() {
   const [searchTerm, setSearchTerm] = useState(
     searchParams.get('search') || ''
   );
-  const [selectedGenre, setSelectedGenre] = useState<string | null>(
+  const [selectedGenres, setSelectedGenres] = useState<string[]>(
     selectedGenresQuery.success && selectedGenresQuery.data 
-      ? selectedGenresQuery.data 
-      : null
+      ? [selectedGenresQuery.data] 
+      : []
   );
 
   const {
@@ -61,7 +60,7 @@ export function TrackList() {
   } = useTracks(page, {
     ...(sortField && { sort: sortField }),
     ...(searchTerm && { search: searchTerm }),
-    ...(selectedGenre && { genre: selectedGenre }),
+    ...(selectedGenres.length > 0 && { genre: selectedGenres[0] }),
   });
 
   useEffect(() => {
@@ -70,10 +69,10 @@ export function TrackList() {
     if (page !== initialPage) params.page = page.toString();
     if (sortField) params.sort = sortField;
     if (searchTerm) params.search = searchTerm;
-    if (selectedGenre) params.genre = selectedGenre;
+    if (selectedGenres.length > 0) params.genre = selectedGenres[0];
 
     setSearchParams(params);
-  }, [page, sortField, searchTerm, selectedGenre, initialPage, setSearchParams]);
+  }, [page, sortField, searchTerm, selectedGenres, initialPage, setSearchParams]);
 
   // const handleClearSort = () => {
   //   setSortField(null);
@@ -112,6 +111,14 @@ export function TrackList() {
           />
         </div>
         <div className="flex items-center gap-2">
+          <Filter
+            options={genres || []}
+            selected={selectedGenres}
+            onSelect={(genre) => setSelectedGenres([genre])}
+            onDeselect={() => setSelectedGenres([])}
+            placeholder="Filter by genre..."
+            disabled={isGenresPending}
+          />
           <Select
             value={sortField || ''}
             onValueChange={(value: string) => setSortField(value as SortField)}
@@ -126,15 +133,30 @@ export function TrackList() {
               <SelectItem value="createdAt">Date Added</SelectItem>
             </SelectContent>
           </Select>
+
+          {/* {sortField && (
+            <>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() =>
+                  setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
+                }
+              >
+                {sortOrder === 'asc' ? '↑' : '↓'}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleClearSort}
+                title="Clear sort"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </>
+          )} */}
         </div>
       </div>
-
-      <GenreFilter
-        genres={genres || []}
-        selectedGenre={selectedGenre}
-        onSelect={setSelectedGenre}
-        disabled={isGenresPending}
-      />
 
       <div className="mt-8 space-y-4">
         {tracks.data.map((track: Track) => (
