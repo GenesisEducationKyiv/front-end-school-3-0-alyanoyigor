@@ -1,5 +1,4 @@
 import { Button } from './ui/button';
-import { cn } from '@/lib/utils';
 
 interface GenreFilterProps {
   genres: string[];
@@ -16,20 +15,14 @@ export function GenreFilter({
 }: GenreFilterProps) {
   return (
     <div className="flex flex-wrap gap-2">
-      <Button
-        variant={selectedGenre === null ? 'default' : 'outline'}
-        size="sm"
-        onClick={() => onSelect(null)}
-        disabled={disabled}
-      >
-        All
-      </Button>
       {genres.map((genre) => (
         <Button
           key={genre}
           variant={selectedGenre === genre ? 'default' : 'outline'}
           size="sm"
-          onClick={() => onSelect(genre)}
+          onClick={() =>
+            selectedGenre === genre ? onSelect(null) : onSelect(genre)
+          }
           disabled={disabled}
         >
           {genre}

@@ -67,6 +67,8 @@ export interface UpdateTrackDto {
   audioFile?: string;
 }
 
+export type SortField = 'title' | 'artist' | 'album' | 'createdAt';
+
 /**
  * Query parameters for listing and filtering tracks
  */
@@ -76,7 +78,7 @@ export interface QueryParams {
   /** Number of items per page */
   limit?: number;
   /** Field to sort results by */
-  sort?: 'title' | 'artist' | 'album' | 'createdAt';
+  sort?: SortField;
   /** Sort direction */
   order?: 'asc' | 'desc';
   /** Search term to filter tracks by title, artist, or album */

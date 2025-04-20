@@ -1,11 +1,11 @@
-import { useGenres, useTracks } from '@/services/hooks';
-import { Track } from '@/types';
+import { SearchIcon, XIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-// import { X } from 'lucide-react';
 import { z } from 'zod';
 
-// import { Button } from '@/components/ui/button';
+import { useDebounce } from '@/hooks/useDebounce';
+import { useGenres, useTracks } from '@/services/hooks';
+import { SortField, Track } from '@/types';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -14,15 +14,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Filter } from './Filter';
+import { Label } from '@/components/ui/label';
+
+import { GenreFilter } from './GenreFilter';
 import { TrackItem } from './TrackItem';
 import { Pagination } from './Pagination';
 import { TrackItemSkeleton } from './TrackItemSkeleton';
+import { Button } from './ui/button';
 
-const SortFieldSchema = z.enum(['title', 'artist', 'album', 'createdAt']);
-// const SortOrderSchema = z.enum(['asc', 'desc']);
-type SortField = z.infer<typeof SortFieldSchema>;
-// type SortOrder = z.infer<typeof SortOrderSchema>;
+const sortFieldOptions = {
+  title: 'Title',
+  artist: 'Artist',
+  album: 'Album',
+  createdAt: 'Date Added',
+};
+
+const SortFieldSchema = z.enum(Object.keys(sortFieldOptions) as [string, ...string[]]);
 
 export function TrackList() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -31,7 +38,6 @@ export function TrackList() {
   const { data: genres, isPending: isGenresPending } = useGenres();
 
   const sortValueQuery = SortFieldSchema.safeParse(searchParams.get('sort'));
-  // const sortOrderQuery = SortOrderSchema.safeParse(searchParams.get('order'));
   const selectedGenresQuery = genres
     ? z
         .enum(genres as [string, ...string[]])
@@ -39,45 +45,50 @@ export function TrackList() {
     : { success: false, data: '' };
 
   const [sortField, setSortField] = useState<SortField | null>(
-    sortValueQuery.success ? sortValueQuery.data : null
+    sortValueQuery.success ? (sortValueQuery.data as SortField) : null
   );
-  // const [sortOrder, setSortOrder] = useState<SortOrder | null>(
-  //   sortOrderQuery.success ? sortOrderQuery.data : null
-  // );
   const [searchTerm, setSearchTerm] = useState(
     searchParams.get('search') || ''
   );
-  const [selectedGenres, setSelectedGenres] = useState<string[]>(
-    selectedGenresQuery.success && selectedGenresQuery.data 
-      ? [selectedGenresQuery.data] 
-      : []
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const [selectedGenre, setSelectedGenre] = useState<string | null>(
+    selectedGenresQuery.success && selectedGenresQuery.data
+      ? selectedGenresQuery.data
+      : null
   );
 
+  // Fetch the tracks
   const {
     data: tracks,
     isPending,
     error,
   } = useTracks(page, {
-    ...(sortField && { sort: sortField }),
-    ...(searchTerm && { search: searchTerm }),
-    ...(selectedGenres.length > 0 && { genre: selectedGenres[0] }),
+    ...(sortField && { sort: sortField as SortField }),
+    ...(debouncedSearchTerm && { search: debouncedSearchTerm }),
+    ...(selectedGenre && { genre: selectedGenre }),
   });
 
+  // Change the search params when the page, sort field, search term, or selected genre changes
   useEffect(() => {
     const params: Record<string, string> = {};
-
-    if (page !== initialPage) params.page = page.toString();
+    if (page !== 1) params.page = page.toString();
     if (sortField) params.sort = sortField;
-    if (searchTerm) params.search = searchTerm;
-    if (selectedGenres.length > 0) params.genre = selectedGenres[0];
+    if (debouncedSearchTerm) params.search = debouncedSearchTerm;
+    if (selectedGenre) params.genre = selectedGenre;
 
     setSearchParams(params);
-  }, [page, sortField, searchTerm, selectedGenres, initialPage, setSearchParams]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    page,
+    sortField,
+    debouncedSearchTerm,
+    selectedGenre,
+    initialPage,
+  ]);
 
-  // const handleClearSort = () => {
-  //   setSortField(null);
-  //   setSortOrder(null);
-  // };
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearchTerm, selectedGenre, sortField]);
 
   if (isPending) {
     return (
@@ -98,30 +109,47 @@ export function TrackList() {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <div className="flex flex-col gap-4 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-1 gap-2">
-          <Input
-            placeholder="Search tracks..."
-            value={searchTerm}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setSearchTerm(e.target.value)
-            }
-            className="max-w-sm"
-          />
+          <Label htmlFor="search" className="relative w-full">
+            <SearchIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              id="search"
+              placeholder="Search tracks..."
+              value={searchTerm}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
+                setSearchTerm(e.target.value)}
+              }
+              className="pl-10"
+            />
+            {searchTerm.length > 0 && (
+              <Button
+                onClick={() => setSearchTerm('')}
+                variant="ghost"
+                className="absolute right-0 top-1/2 size-8 -translate-y-1/2"
+              >
+                <XIcon className="h-5 w-5" />
+              </Button>
+            )}
+          </Label>
         </div>
         <div className="flex items-center gap-2">
-          <Filter
-            options={genres || []}
-            selected={selectedGenres}
-            onSelect={(genre) => setSelectedGenres([genre])}
-            onDeselect={() => setSelectedGenres([])}
-            placeholder="Filter by genre..."
-            disabled={isGenresPending}
-          />
+          {sortField ? (
+            <Button
+              variant="outline"
+              onClick={() => setSortField(null)}
+              className="flex justify-between min-w-32 text-muted-foreground"
+            >
+              {sortFieldOptions[sortField]}
+              <XIcon className="h-4 w-4" />
+            </Button>
+          ) : (
           <Select
             value={sortField || ''}
-            onValueChange={(value: string) => setSortField(value as SortField)}
+            onValueChange={(value: SortField) => {
+              setSortField(value);
+            }}
           >
             <SelectTrigger className="min-w-32">
               <SelectValue placeholder="Sort by" />
@@ -133,30 +161,16 @@ export function TrackList() {
               <SelectItem value="createdAt">Date Added</SelectItem>
             </SelectContent>
           </Select>
-
-          {/* {sortField && (
-            <>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() =>
-                  setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
-                }
-              >
-                {sortOrder === 'asc' ? '↑' : '↓'}
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleClearSort}
-                title="Clear sort"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </>
-          )} */}
+          
+          )}
         </div>
       </div>
+      <GenreFilter
+        genres={genres || []}
+        selectedGenre={selectedGenre}
+        onSelect={setSelectedGenre}
+        disabled={isGenresPending}
+      />
 
       <div className="mt-8 space-y-4">
         {tracks.data.map((track: Track) => (
@@ -164,7 +178,7 @@ export function TrackList() {
         ))}
       </div>
 
-      {tracks.meta && (
+      {tracks.meta.totalPages > 1 && (
         <div className="mt-8">
           <Pagination
             currentPage={tracks.meta.page}
