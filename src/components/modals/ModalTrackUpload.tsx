@@ -7,14 +7,13 @@ import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { useDeleteTrackFile, useUploadTrackFile } from '@/services/hooks';
-import { Track } from '@/types';
+import { ModalState, ModalStateEnum, Track } from '@/types';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -45,17 +44,18 @@ type FormData = z.infer<typeof formSchema>;
 
 interface ModalTrackUploadProps {
   track: Track;
-  children: React.ReactNode;
+  open: ModalState;
+  setOpen: (open: ModalState) => void;
   disableAutoFocus?: boolean;
 }
 
-export function ModalTrackUpload({
+export default function ModalTrackUpload({
   track,
-  children,
+  open,
+  setOpen,
   disableAutoFocus = false,
 }: ModalTrackUploadProps) {
   const queryClient = useQueryClient();
-  const [isOpen, setIsOpen] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -89,7 +89,7 @@ export function ModalTrackUpload({
         description: 'File uploaded successfully',
       });
       form.reset();
-      setIsOpen(false);
+      setOpen(ModalStateEnum.Closed);
       queryClient.invalidateQueries({ queryKey: ['tracks'] });
     } catch (error) {
       toast.error('Error', {
@@ -139,15 +139,14 @@ export function ModalTrackUpload({
 
   return (
     <Dialog
-      open={isOpen}
+      open={open === ModalStateEnum.Open}
       onOpenChange={(open) => {
-        setIsOpen(open);
+        setOpen(open ? ModalStateEnum.Open : ModalStateEnum.Closed);
         if (!open) {
           handleResetFile();
         }
       }}
     >
-      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent
         className="sm:max-w-[425px]"
         onOpenAutoFocus={(event) => {
@@ -198,11 +197,11 @@ export function ModalTrackUpload({
               </p>
             )}
 
-            {form.watch('file') && (
+            {file && (
               <div className="flex items-center flex-col  justify-between p-2 pl-4 border rounded-md space-y-2">
                 <div className="flex items-center justify-between w-full">
                   <span className="text-sm truncate">
-                    {form.watch('file').name}
+                    {file.name}
                   </span>
                   <Button
                     type="button"
@@ -234,7 +233,7 @@ export function ModalTrackUpload({
                 type="button"
                 variant="destructive"
                 onClick={handleDeleteFile}
-                disabled={isDeletePending}
+                disabled={isUploadPending || isDeletePending}
               >
                 {isDeletePending ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -246,7 +245,7 @@ export function ModalTrackUpload({
             )}
             <Button
               type="submit"
-              disabled={isUploadPending || !form.watch('file')}
+              disabled={!file || isUploadPending || isDeletePending}
             >
               {isUploadPending ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

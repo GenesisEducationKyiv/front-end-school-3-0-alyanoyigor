@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -6,15 +6,14 @@ import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Plus, X } from 'lucide-react';
 
-import { useGenres, useUpdateTrack } from '@/services/hooks';
-import { Track, UpdateTrackDto } from '@/types';
+import { useUpdateTrack } from '@/services/hooks';
+import { ModalState, ModalStateEnum, Track, UpdateTrackDto } from '@/types';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import {
@@ -38,14 +37,14 @@ const formSchema = z.object({
 
 interface ModalTrackUpdateProps {
   track: Track;
-  children: React.ReactNode;
+  genres: string[];
+  open: ModalState;
+  setOpen: (open: ModalState) => void;
 }
 
-export function ModalTrackUpdate({ track, children }: ModalTrackUpdateProps) {
+export default function ModalTrackUpdate({ track, open, setOpen, genres: availableGenres }: ModalTrackUpdateProps) {
   const queryClient = useQueryClient();
-  const [isOpen, setIsOpen] = useState(false);
   const { mutateAsync: updateTrack, isPending } = useUpdateTrack();
-  const { data: availableGenres = [] } = useGenres();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -73,7 +72,7 @@ export function ModalTrackUpdate({ track, children }: ModalTrackUpdateProps) {
         description: 'Track updated successfully',
       });
       form.reset();
-      setIsOpen(false);
+      setOpen(ModalStateEnum.Closed);
 
       queryClient.invalidateQueries({ queryKey: ['tracks'] });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -101,15 +100,14 @@ export function ModalTrackUpdate({ track, children }: ModalTrackUpdateProps) {
 
   return (
     <Dialog
-      open={isOpen}
+      open={open === ModalStateEnum.Open}
       onOpenChange={(open) => {
-        setIsOpen(open);
+        setOpen(open ? ModalStateEnum.Open : ModalStateEnum.Closed);
         if (!open) {
           form.reset();
         }
       }}
     >
-      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Track</DialogTitle>

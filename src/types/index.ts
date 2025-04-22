@@ -98,3 +98,11 @@ export interface TracksResponse {
     totalPages: number;
   };
 }
+
+export enum ModalStateEnum {
+  Idle = 'idle',
+  Open = 'open',
+  Closed = 'closed',
+}
+
+export type ModalState = (typeof ModalStateEnum)[keyof typeof ModalStateEnum];

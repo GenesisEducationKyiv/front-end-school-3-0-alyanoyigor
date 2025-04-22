@@ -1,45 +1,50 @@
-import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Trash2 } from 'lucide-react';
 
 import { useDeleteTrack } from '@/services/hooks';
-import { Track } from '@/types';
+import { ModalState, ModalStateEnum, Track } from '@/types';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
 interface ModalTrackDeleteProps {
   track: Track;
-  children: React.ReactNode;
+  open: ModalState;
+  setOpen: (open: ModalState) => void;
 }
 
-export function ModalTrackDelete({ track, children }: ModalTrackDeleteProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function ModalTrackDelete({
+  track,
+  open,
+  setOpen,
+}: ModalTrackDeleteProps) {
   const queryClient = useQueryClient();
   const { mutateAsync: deleteTrack, isPending } = useDeleteTrack();
 
   const handleDelete = async () => {
     try {
       await deleteTrack({ id: track.id });
-
       toast.success('Track deleted successfully');
       queryClient.invalidateQueries({ queryKey: ['tracks'] });
-      setIsOpen(false);
+      setOpen(ModalStateEnum.Closed);
     } catch (error) {
       toast.error('Failed to delete track');
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+    <Dialog
+      open={open === ModalStateEnum.Open}
+      onOpenChange={(open) => {
+        setOpen(open ? ModalStateEnum.Open : ModalStateEnum.Closed);
+      }}
+    >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Delete Track</DialogTitle>
@@ -52,7 +57,7 @@ export function ModalTrackDelete({ track, children }: ModalTrackDeleteProps) {
           <Button
             type="button"
             variant="outline"
-            onClick={() => setIsOpen(false)}
+            onClick={() => setOpen(ModalStateEnum.Closed)}
             disabled={isPending}
           >
             Cancel

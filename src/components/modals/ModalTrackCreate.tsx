@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -7,14 +6,13 @@ import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useGenres, useCreateTrack } from '@/services/hooks';
-import { CreateTrackDto } from '@/types';
+import { CreateTrackDto, ModalState, ModalStateEnum } from '@/types';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,10 +34,14 @@ const formSchema = z.object({
   genres: z.array(z.string()).min(1, 'At least one genre is required'),
 });
 
-export function ModalTrackCreate({ children }: { children: React.ReactNode }) {
+interface ModalTrackCreateProps {
+  open: ModalState;
+  setOpen: (open: ModalState) => void;
+}
+
+export default function ModalTrackCreate({ open, setOpen }: ModalTrackCreateProps) {
   const { data: availableGenres = [] } = useGenres();
   const { mutateAsync: createTrack, isPending } = useCreateTrack();
-  const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -61,7 +63,7 @@ export function ModalTrackCreate({ children }: { children: React.ReactNode }) {
         description: 'Track created successfully',
       });
       form.reset();
-      setIsOpen(false);
+      setOpen(ModalStateEnum.Closed);
 
       queryClient.invalidateQueries({ queryKey: ['tracks'] });
     } catch (error) {
@@ -87,13 +89,12 @@ export function ModalTrackCreate({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
-      setIsOpen(open);
+    <Dialog open={open === ModalStateEnum.Open} onOpenChange={(open) => {
+      setOpen(open ? ModalStateEnum.Open : ModalStateEnum.Closed);
       if (!open) {
         form.reset();
       }
     }}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Create New Track</DialogTitle>
@@ -211,7 +212,7 @@ export function ModalTrackCreate({ children }: { children: React.ReactNode }) {
                 type="button"
                 variant="outline"
                 onClick={() => {
-                  setIsOpen(false);
+                  setOpen(ModalStateEnum.Closed);
                   form.reset();
                 }}
                 disabled={isPending}
