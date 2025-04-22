@@ -16,11 +16,11 @@ import {
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 
-import { GenreFilter } from './GenreFilter';
+import { GenreFilter } from '../GenreFilter';
 import { TrackItem } from './TrackItem';
-import { Pagination } from './Pagination';
+import { Pagination } from '../Pagination';
 import { TrackItemSkeleton } from './TrackItemSkeleton';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 
 const sortFieldOptions = {
   title: 'Title',
@@ -29,12 +29,15 @@ const sortFieldOptions = {
   createdAt: 'Date Added',
 };
 
-const SortFieldSchema = z.enum(Object.keys(sortFieldOptions) as [string, ...string[]]);
+const SortFieldSchema = z.enum(
+  Object.keys(sortFieldOptions) as [string, ...string[]]
+);
 
 export function TrackList() {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialPage = Number(searchParams.get('page')) || 1;
   const [page, setPage] = useState(initialPage);
+
   const { data: genres, isPending: isGenresPending } = useGenres();
 
   const sortValueQuery = SortFieldSchema.safeParse(searchParams.get('sort'));
@@ -62,7 +65,8 @@ export function TrackList() {
     data: tracks,
     isPending,
     error,
-  } = useTracks(page, {
+  } = useTracks({
+    ...(page > 1 && { page }),
     ...(sortField && { sort: sortField as SortField }),
     ...(debouncedSearchTerm && { search: debouncedSearchTerm }),
     ...(selectedGenre && { genre: selectedGenre }),
@@ -71,23 +75,20 @@ export function TrackList() {
   // Change the search params when the page, sort field, search term, or selected genre changes
   useEffect(() => {
     const params: Record<string, string> = {};
-    if (page !== 1) params.page = page.toString();
+    if (page > 1) params.page = page.toString();
     if (sortField) params.sort = sortField;
     if (debouncedSearchTerm) params.search = debouncedSearchTerm;
     if (selectedGenre) params.genre = selectedGenre;
 
     setSearchParams(params);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    page,
-    sortField,
-    debouncedSearchTerm,
-    selectedGenre,
-    initialPage,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, sortField, debouncedSearchTerm, selectedGenre]);
 
   useEffect(() => {
-    setPage(1);
+    if (page !== initialPage && page > 1) {
+      setPage(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearchTerm, selectedGenre, sortField]);
 
   if (isPending) {
@@ -118,9 +119,9 @@ export function TrackList() {
               id="search"
               placeholder="Search tracks..."
               value={searchTerm}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                setSearchTerm(e.target.value)}
-              }
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setSearchTerm(e.target.value);
+              }}
               className="pl-10"
             />
             {searchTerm.length > 0 && (
@@ -145,23 +146,22 @@ export function TrackList() {
               <XIcon className="h-4 w-4" />
             </Button>
           ) : (
-          <Select
-            value={sortField || ''}
-            onValueChange={(value: SortField) => {
-              setSortField(value);
-            }}
-          >
-            <SelectTrigger className="min-w-32">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="title">Title</SelectItem>
-              <SelectItem value="artist">Artist</SelectItem>
-              <SelectItem value="album">Album</SelectItem>
-              <SelectItem value="createdAt">Date Added</SelectItem>
-            </SelectContent>
-          </Select>
-          
+            <Select
+              value={sortField || ''}
+              onValueChange={(value: SortField) => {
+                setSortField(value);
+              }}
+            >
+              <SelectTrigger className="min-w-32">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="title">Title</SelectItem>
+                <SelectItem value="artist">Artist</SelectItem>
+                <SelectItem value="album">Album</SelectItem>
+                <SelectItem value="createdAt">Date Added</SelectItem>
+              </SelectContent>
+            </Select>
           )}
         </div>
       </div>

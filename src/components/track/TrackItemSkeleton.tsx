@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 export function TrackItemSkeleton() {
   return (
     <Card>
-      <CardContent>
+      <CardContent className="py-2">
         <div className="flex items-center gap-4">
           <Skeleton className="w-16 h-16 rounded-md" />
           
