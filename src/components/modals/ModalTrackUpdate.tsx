@@ -15,9 +15,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Form, FormField } from '@/components/ui/form';
 import { trackFormFields } from '@/consts';
-import { InputField } from './InputField';
+import { InputField } from '../InputField';
 import { UpdateTrackSchema } from '@/validation';
-import { GenreSelect } from './GenreSelect';
+import { GenreSelect } from '../filters/GenreSelect';
 
 interface ModalTrackUpdateProps {
   track: Track;

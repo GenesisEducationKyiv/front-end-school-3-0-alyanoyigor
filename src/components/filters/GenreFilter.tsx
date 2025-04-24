@@ -1,5 +1,5 @@
-import { Button } from './ui/button';
-import { Skeleton } from './ui/skeleton';
+import { Button } from '../ui/button';
+import { Skeleton } from '../ui/skeleton';
 
 interface GenreFilterProps {
   selectedGenre: string | null;

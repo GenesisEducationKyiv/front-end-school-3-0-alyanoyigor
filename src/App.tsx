@@ -2,7 +2,7 @@ import { Toaster } from 'sonner';
 
 import { AudioPlayerProvider } from '@/contexts/AudioPlayerContext';
 import { Header } from '@/components/Header';
-import { TrackListPage } from '@/components/track/TrackListPage';
+import { TrackListPage } from '@/components/TrackListPage';
 
 function App() {
   return (

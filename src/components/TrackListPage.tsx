@@ -7,9 +7,9 @@ import { useGenres } from '@/services/hooks';
 import { SortField } from '@/types';
 import { sortFieldOptions } from '@/consts';
 
-import { GenreFilter } from '../GenreFilter';
-import { SearchTrack } from '../SearchTrack';
-import { SortTrack } from '../SortTrack';
+import { GenreFilter } from './filters/GenreFilter';
+import { SearchTrack } from './filters/SearchTrack';
+import { SortTrack } from './filters/SortTrack';
 import { TrackList } from './TrackList';
 
 const SortFieldSchema = z.enum(

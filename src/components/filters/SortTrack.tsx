@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { sortFieldOptions } from '@/consts';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 
 interface SortTrackProps {
   sortField: SortField | null;

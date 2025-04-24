@@ -16,8 +16,8 @@ import { Form, FormField } from '@/components/ui/form';
 import { CreateTrackSchema } from '@/validation';
 import { trackFormFields } from '@/consts';
 
-import { InputField } from './InputField';
-import { GenreSelect } from './GenreSelect';
+import { InputField } from '../InputField';
+import { GenreSelect } from '../filters/GenreSelect';
 import { useCallback } from 'react';
 
 interface ModalTrackCreateProps {

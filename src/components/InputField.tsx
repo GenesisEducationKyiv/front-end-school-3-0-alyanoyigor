@@ -1,7 +1,7 @@
 import { ControllerRenderProps, FieldValues } from 'react-hook-form';
 
-import { FormControl, FormItem, FormLabel, FormMessage } from '../ui/form';
-import { Input } from '../ui/input';
+import { FormControl, FormItem, FormLabel, FormMessage } from './ui/form';
+import { Input } from './ui/input';
 
 interface InputFieldProps<T extends FieldValues> {
   field: ControllerRenderProps<T>;

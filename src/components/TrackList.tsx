@@ -1,9 +1,9 @@
 import { useTracks } from '@/services/hooks';
 import { CreateTrackDto, SortField, Track, UpdateTrackDto } from '@/types';
 
-import { TrackItem } from './TrackItem';
-import { TrackItemSkeleton } from './TrackItemSkeleton';
-import { Pagination } from '../Pagination';
+import { TrackItem } from './track/TrackItem';
+import { TrackItemSkeleton } from './track/TrackItemSkeleton';
+import { Pagination } from './Pagination';
 import { useMutationState } from '@tanstack/react-query';
 
 interface TrackListProps {

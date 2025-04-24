@@ -11,18 +11,22 @@ export const getTracks = (params?: QueryParams): Promise<TracksResponse> =>
   api.get('/tracks', { params });
 
 export const createTrack = async (data: CreateTrackDto): Promise<Track> => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   return api.post('/tracks', data);
 };
 
 export const updateTrack = async (id: string, data: UpdateTrackDto) => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   return api.put(`/tracks/${id}`, data);
 };
 
-export const deleteTrack = (id: string) => api.delete(`/tracks/${id}`);
+export const deleteTrack = async (id: string) => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  return api.delete(`/tracks/${id}`);
+};
 
 export const getGenres = (): Promise<string[]> => api.get('/genres');
 

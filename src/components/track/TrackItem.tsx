@@ -5,7 +5,7 @@ import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { TrackText } from './TrackInfo';
 import { TrackImage } from './TrackInfo';
 import { TrackActions } from './TrackActions';
-import { TrackAudioPlayer } from './TrackAudioPlayer';
+import { TrackAudioPlayer } from '../audioPlayer/TrackAudioPlayer';
 
 interface TrackItemProps {
   track: Track;

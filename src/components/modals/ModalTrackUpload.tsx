@@ -16,7 +16,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { AudioPlayerInModal } from './AudioPlayerInModal';
+import { AudioPlayerInModal } from '../audioPlayer/AudioPlayerInModal';
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 const ACCEPTED_AUDIO_TYPES = [
