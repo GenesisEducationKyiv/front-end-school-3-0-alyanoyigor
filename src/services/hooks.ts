@@ -51,8 +51,12 @@ export const useUpdateTrack = () => {
 };
 
 export const useDeleteTrack = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
+    mutationKey: ['delete-track'],
     mutationFn: ({ id }: { id: string }) => deleteTrack(id),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['tracks'] }),
   });
 };
 

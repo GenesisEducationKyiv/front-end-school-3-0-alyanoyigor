@@ -150,7 +150,7 @@ export default function ModalTrackUpload({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-testid="track-form">
           <div className="space-y-2">
             <div className="flex items-center justify-center w-full">
               <label
@@ -212,6 +212,8 @@ export default function ModalTrackUpload({
                 variant="destructive"
                 onClick={handleDeleteFile}
                 disabled={isUploadPending || isDeletePending}
+                aria-disabled={isUploadPending || isDeletePending}
+                data-loading={isDeletePending}
               >
                 {isDeletePending ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -224,6 +226,9 @@ export default function ModalTrackUpload({
             <Button
               type="submit"
               disabled={!file || isUploadPending || isDeletePending}
+              aria-disabled={!file || isUploadPending || isDeletePending}
+              data-testid="submit-button"
+              data-loading={isUploadPending}
             >
               {isUploadPending ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

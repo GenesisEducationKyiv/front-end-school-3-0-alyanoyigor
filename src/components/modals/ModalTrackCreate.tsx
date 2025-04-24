@@ -95,8 +95,8 @@ export default function ModalTrackCreate({
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {trackFormFields.map(({ name, label, placeholder }) => (
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-testid="track-form">
+            {trackFormFields.map(({ name, label, placeholder, testId }) => (
               <FormField
                 key={name}
                 control={form.control}
@@ -106,6 +106,7 @@ export default function ModalTrackCreate({
                     field={field}
                     label={label}
                     placeholder={placeholder}
+                    testId={testId}
                   />
                 )}
               />
@@ -132,10 +133,11 @@ export default function ModalTrackCreate({
                   form.reset();
                 }}
                 disabled={isPending}
+                aria-disabled={isPending}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isPending}>
+              <Button type="submit" disabled={isPending} data-testid="submit-button" aria-disabled={isPending} data-loading={isPending} >
                 {isPending ? 'Creating...' : 'Create Track'}
               </Button>
             </div>

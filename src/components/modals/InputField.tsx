@@ -7,20 +7,22 @@ interface InputFieldProps<T extends FieldValues> {
   field: ControllerRenderProps<T>;
   label: string;
   placeholder: string;
+  testId: string;
 }
 
 export function InputField<T extends FieldValues>({
   field,
   label,
   placeholder,
+  testId,
 }: InputFieldProps<T>) {
   return (
     <FormItem>
       <FormLabel>{label}</FormLabel>
       <FormControl>
-        <Input placeholder={placeholder} {...field} />
+        <Input placeholder={placeholder} {...field} data-testid={`input-${testId}`} />
       </FormControl>
-      <FormMessage />
+      <FormMessage data-testid={`error-${field.name}`} />
     </FormItem>
   );
 }

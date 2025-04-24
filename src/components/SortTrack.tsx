@@ -33,6 +33,7 @@ export const SortTrack = memo(({ sortField, setSortField }: SortTrackProps) => {
       onValueChange={(value: SortField) => {
         setSortField(value);
       }}
+      data-testid="sort-select"
     >
       <SelectTrigger className="min-w-32">
         <SelectValue placeholder="Sort by" />

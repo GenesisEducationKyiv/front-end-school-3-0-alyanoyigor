@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Trash2 } from 'lucide-react';
 
@@ -24,25 +23,25 @@ export default function ModalTrackDelete({
   open,
   setOpen,
 }: ModalTrackDeleteProps) {
-  const queryClient = useQueryClient();
   const { mutateAsync: deleteTrack, isPending } = useDeleteTrack();
   const { mutateAsync: deleteTrackFile, isPending: isDeletingFile } =
     useDeleteTrackFile();
 
   const handleDelete = async () => {
-    try {
-      if (track.audioFile) {
-        await deleteTrackFile({ id: track.id });
+    toast.promise(
+      async () => {
+        if (track.audioFile) {
+          await deleteTrackFile({ id: track.id });
+        }
+        await deleteTrack({ id: track.id });
+      },
+      {
+        loading: 'Deleting track...',
+        success: 'Track deleted successfully',
+        error: 'Failed to delete track',
       }
-      await deleteTrack({ id: track.id });
-
-      toast.success('Track deleted successfully');
-
-      queryClient.invalidateQueries({ queryKey: ['tracks'] });
-      setOpen(ModalStateEnum.Closed);
-    } catch (error) {
-      toast.error('Failed to delete track');
-    }
+    );
+    setOpen(ModalStateEnum.Closed);
   };
 
   return (
@@ -51,13 +50,17 @@ export default function ModalTrackDelete({
       onOpenChange={(open) => {
         setOpen(open ? ModalStateEnum.Open : ModalStateEnum.Closed);
       }}
+      data-testid="confirm-dialog"
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Delete Track</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete <span className="font-bold inline-block leading-2.5 truncate max-w-[200px] md:max-w-[300px]">{track.title}</span>? This action cannot
-            be undone.
+            Are you sure you want to delete{' '}
+            <span className="font-bold inline-block leading-2.5 truncate max-w-[200px] md:max-w-[300px]">
+              {track.title}
+            </span>
+            ? This action cannot be undone.
           </DialogDescription>
         </DialogHeader>
         <div className="flex justify-end gap-2">
@@ -66,6 +69,8 @@ export default function ModalTrackDelete({
             variant="outline"
             onClick={() => setOpen(ModalStateEnum.Closed)}
             disabled={isPending || isDeletingFile}
+            aria-disabled={isPending || isDeletingFile}
+            data-testid="cancel-delete"
           >
             Cancel
           </Button>
@@ -74,6 +79,9 @@ export default function ModalTrackDelete({
             variant="destructive"
             onClick={handleDelete}
             disabled={isPending || isDeletingFile}
+            aria-disabled={isPending || isDeletingFile}
+            data-testid="confirm-delete"
+            data-loading={isPending}
           >
             {isPending ? (
               <>

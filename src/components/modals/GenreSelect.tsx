@@ -20,7 +20,7 @@ export function GenreSelect({
   handleAddGenre,
 }: GenreSelectProps) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" data-testid="genre-selector">
       <FormLabel>Genres</FormLabel>
       <div className="flex flex-wrap gap-2">
         {selectedGenres.map((genre: string) => (
@@ -58,7 +58,7 @@ export function GenreSelect({
           ))}
       </div>
       {error && (
-        <p className="text-sm font-medium text-destructive">{error.message}</p>
+        <p className="text-sm font-medium text-destructive" data-testid="error-genre">{error.message}</p>
       )}
     </div>
   );

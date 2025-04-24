@@ -29,6 +29,8 @@ export function TrackActions({ track, genres }: { track: Track, genres: string[]
         aria-label="Edit track"
         onClick={() => setOpenModalUpdate(ModalStateEnum.Open)}
         disabled={track.id.includes('optimistic')}
+        aria-disabled={track.id.includes('optimistic')}
+        data-testid={`edit-track-${track.id}`}
       >
         <Pencil className="w-4 h-4" />
       </Button>
@@ -40,6 +42,8 @@ export function TrackActions({ track, genres }: { track: Track, genres: string[]
         aria-label="Upload track"
         onClick={() => setOpenModalUpload(ModalStateEnum.Open)}
         disabled={track.id.includes('optimistic')}
+        aria-disabled={track.id.includes('optimistic')}
+        data-testid={`upload-track-${track.id}`}
       >
         <Upload className="w-4 h-4" />
       </Button>
@@ -51,6 +55,8 @@ export function TrackActions({ track, genres }: { track: Track, genres: string[]
         aria-label="Delete track"
         onClick={() => setOpenModalDelete(ModalStateEnum.Open)}
         disabled={track.id.includes('optimistic')}
+        aria-disabled={track.id.includes('optimistic')}
+        data-testid={`delete-track-${track.id}`}
       >
         <Trash className="w-4 h-4" />
       </Button>

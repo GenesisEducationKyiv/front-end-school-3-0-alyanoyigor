@@ -18,7 +18,7 @@ export function GenreFilter({
     <div className="flex flex-wrap gap-2">
       {isGenresPending &&
         Array.from({ length: 10 }).map((_, index) => (
-          <Skeleton key={index} className="h-8 w-20" />
+          <Skeleton key={index} className="h-8 w-20" data-testid="loading-indicator" />
         ))}
 
       {genres &&
@@ -31,6 +31,8 @@ export function GenreFilter({
               selectedGenre === genre ? onSelect(null) : onSelect(genre)
             }
             disabled={isGenresPending}
+            aria-disabled={isGenresPending}
+            data-testid="filter-genre"
           >
             {genre}
           </Button>

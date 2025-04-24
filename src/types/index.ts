@@ -110,4 +110,5 @@ export type TrackFormField = {
   name: keyof CreateTrackDto;
   label: string;
   placeholder: string;
+  testId: string;
 };

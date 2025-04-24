@@ -1,4 +1,5 @@
 interface TrackAudioPlayerProps {
+  id: string;
   audioFile: string;
   progressRef: React.RefObject<HTMLDivElement | null>;
   audioRef: React.RefObject<HTMLAudioElement | null>;
@@ -12,6 +13,7 @@ interface TrackAudioPlayerProps {
 }
 
 export function TrackAudioPlayer({
+  id,
   audioFile,
   progressRef,
   audioRef,
@@ -24,7 +26,10 @@ export function TrackAudioPlayer({
   isDirty,
 }: TrackAudioPlayerProps) {
   return (
-    <div className="absolute bottom-2 left-6 right-6">
+    <div
+      className="absolute bottom-2 left-6 right-6"
+      data-testid={`audio-player-${id}`}
+    >
       <div className="w-full">
         <audio
           ref={audioRef}
@@ -41,7 +46,10 @@ export function TrackAudioPlayer({
               <span>/</span>
               <span>{formatTime(duration)}</span>
             </div>
-            <div className="flex items-center gap-2 bg-background/80 backdrop-blur-sm">
+            <div
+              className="flex items-center gap-2 bg-background/80 backdrop-blur-sm"
+              data-testid={`audio-progress-${id}`}
+            >
               <div className="flex-1">
                 <div
                   ref={progressRef}

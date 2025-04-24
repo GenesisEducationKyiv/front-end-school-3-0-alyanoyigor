@@ -34,19 +34,23 @@ export function TrackList({
     ...(selectedGenre && { genre: selectedGenre }),
   });
 
-  const optimisticNewTrack = useMutationState({
+  const optimisticNewTracks = useMutationState({
     filters: { mutationKey: ['add-track'], status: 'pending' },
     select: (mutation) => mutation.state.variables as CreateTrackDto,
   });
-  const optimisticUpdatedTrack = useMutationState({
+  const [optimisticUpdatedTrack] = useMutationState({
     filters: { mutationKey: ['update-track'], status: 'pending' },
     select: (mutation) =>
       mutation.state.variables as { id: string; data: UpdateTrackDto },
   });
+  const [optimisticDeletedTrack] = useMutationState({
+    filters: { mutationKey: ['delete-track'], status: 'pending' },
+    select: (mutation) => mutation.state.variables as { id: string },
+  });
 
   if (isPending) {
     return (
-      <div className="mt-8 space-y-4">
+      <div className="mt-8 space-y-4" data-testid="loading-tracks">
         {Array.from({ length: 5 }).map((_, index) => (
           <TrackItemSkeleton key={index} />
         ))}
@@ -64,26 +68,31 @@ export function TrackList({
 
   const { data, meta: pagination } = tracksFetchData;
   const tracks = [
-    ...optimisticNewTrack.map((track) => ({
+    ...optimisticNewTracks.map((track) => ({
       ...track,
       id: 'optimistic-' + Math.random(),
       slug: track.title.toLowerCase().replace(/\s+/g, '-'),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     })),
-    ...data.map((track) => {
-      if (
-        optimisticUpdatedTrack[0] &&
-        track.id === optimisticUpdatedTrack[0].id
-      ) {
-        return {
-          ...track,
-          ...optimisticUpdatedTrack[0].data,
-        };
-      }
+    ...data
+      .map((track) => {
+        if (optimisticUpdatedTrack && track.id === optimisticUpdatedTrack.id) {
+          return {
+            ...track,
+            ...optimisticUpdatedTrack.data,
+          };
+        }
 
-      return track;
-    }),
+        return track;
+      })
+      .filter((track) => {
+        if (optimisticDeletedTrack && track.id === optimisticDeletedTrack.id) {
+          return false;
+        }
+
+        return true;
+      }),
   ];
 
   return (

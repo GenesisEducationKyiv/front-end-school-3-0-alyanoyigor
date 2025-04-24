@@ -20,6 +20,7 @@ export function SearchTrack({ searchTerm, setSearchTerm }: SearchTrackProps) {
           setSearchTerm(e.target.value);
         }}
         className="pl-10"
+        data-testid="search-input"
       />
       {searchTerm.length > 0 && (
         <Button

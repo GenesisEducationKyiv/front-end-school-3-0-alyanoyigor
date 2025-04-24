@@ -11,12 +11,14 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
   
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex items-center justify-center gap-2" data-testid="pagination">
       <Button
         variant="outline"
         size="icon"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
+        aria-disabled={currentPage === 1}
+        data-testid="pagination-prev"
       >
         <ChevronLeft className="h-4 w-4" />
       </Button>
@@ -37,6 +39,8 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         size="icon"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
+        aria-disabled={currentPage === totalPages}
+        data-testid="pagination-next"
       >
         <ChevronRight className="h-4 w-4" />
       </Button>

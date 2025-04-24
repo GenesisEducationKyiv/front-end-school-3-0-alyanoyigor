@@ -35,6 +35,7 @@ export function TrackImage({
             'absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity rounded-md flex items-center justify-center',
             isPlaying && 'opacity-100'
           )}
+          data-testid={`${isPlaying ? 'pause' : 'play'}-button-${track.id}`}
         >
           {isPlaying ? (
             <Pause className="w-8 h-8 text-white" />
@@ -50,9 +51,9 @@ export function TrackImage({
 export function TrackText({ track }: { track: Track }) {
   return (
     <div className="flex-1 min-w-0">
-      <h3 className="font-semibold truncate">{track.title}</h3>
+      <h3 className="font-semibold truncate" data-testid={`track-item-${track.id}-title`}>{track.title}</h3>
       <p className="text-sm text-muted-foreground truncate">
-        {track.artist}
+        <span data-testid={`track-item-${track.id}-artist`}>{track.artist}</span>
         {track.album && ` • ${track.album}`}
       </p>
       <div className="flex gap-1 mt-1 flex-wrap">

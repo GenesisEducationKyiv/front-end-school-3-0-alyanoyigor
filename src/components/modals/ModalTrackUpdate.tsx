@@ -124,8 +124,12 @@ export default function ModalTrackUpdate({
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {trackFormFields.map(({ name, label, placeholder }) => (
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4"
+            data-testid="track-form"
+          >
+            {trackFormFields.map(({ name, label, placeholder, testId }) => (
               <FormField
                 key={name}
                 control={form.control}
@@ -135,6 +139,7 @@ export default function ModalTrackUpdate({
                     field={field}
                     label={label}
                     placeholder={placeholder}
+                    testId={testId}
                   />
                 )}
               />
@@ -153,7 +158,13 @@ export default function ModalTrackUpdate({
             />
 
             <div className="flex justify-end">
-              <Button type="submit" disabled={isPending}>
+              <Button
+                type="submit"
+                disabled={isPending}
+                aria-disabled={isPending}
+                data-testid="submit-button"
+                data-loading={isPending}
+              >
                 {isPending ? 'Saving...' : 'Save Changes'}
               </Button>
             </div>
