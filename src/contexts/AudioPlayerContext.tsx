@@ -7,11 +7,17 @@ interface AudioPlayerContextType {
 
 const AudioPlayerContext = createContext<AudioPlayerContextType | null>(null);
 
-export function AudioPlayerProvider({ children }: { children: React.ReactNode }) {
+export function AudioPlayerProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [currentPlayingId, setCurrentPlayingId] = useState<string | null>(null);
 
   return (
-    <AudioPlayerContext.Provider value={{ currentPlayingId, setCurrentPlayingId }}>
+    <AudioPlayerContext.Provider
+      value={{ currentPlayingId, setCurrentPlayingId }}
+    >
       {children}
     </AudioPlayerContext.Provider>
   );
@@ -20,7 +26,9 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode })
 export function useAudioPlayerContext() {
   const context = useContext(AudioPlayerContext);
   if (!context) {
-    throw new Error('useAudioPlayerContext must be used within an AudioPlayerProvider');
+    throw new Error(
+      'useAudioPlayerContext must be used within an AudioPlayerProvider'
+    );
   }
   return context;
-} 
+}

@@ -1,4 +1,3 @@
-
 /**
  * Core domain entities
  */
@@ -106,3 +105,9 @@ export enum ModalStateEnum {
 }
 
 export type ModalState = (typeof ModalStateEnum)[keyof typeof ModalStateEnum];
+
+export type TrackFormField = {
+  name: keyof CreateTrackDto;
+  label: string;
+  placeholder: string;
+};

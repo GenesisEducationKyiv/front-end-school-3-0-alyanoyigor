@@ -28,6 +28,7 @@ export function TrackActions({ track, genres }: { track: Track, genres: string[]
         className="text-muted-foreground hover:text-primary focus-within:text-primary"
         aria-label="Edit track"
         onClick={() => setOpenModalUpdate(ModalStateEnum.Open)}
+        disabled={track.id.includes('optimistic')}
       >
         <Pencil className="w-4 h-4" />
       </Button>
@@ -38,6 +39,7 @@ export function TrackActions({ track, genres }: { track: Track, genres: string[]
         className="text-muted-foreground hover:text-primary focus-within:text-primary"
         aria-label="Upload track"
         onClick={() => setOpenModalUpload(ModalStateEnum.Open)}
+        disabled={track.id.includes('optimistic')}
       >
         <Upload className="w-4 h-4" />
       </Button>
@@ -48,6 +50,7 @@ export function TrackActions({ track, genres }: { track: Track, genres: string[]
         className="text-muted-foreground hover:text-primary focus-within:text-primary"
         aria-label="Delete track"
         onClick={() => setOpenModalDelete(ModalStateEnum.Open)}
+        disabled={track.id.includes('optimistic')}
       >
         <Trash className="w-4 h-4" />
       </Button>

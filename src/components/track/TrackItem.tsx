@@ -14,7 +14,8 @@ interface TrackItemProps {
 
 export function TrackItem({ track, genres }: TrackItemProps) {
   const { isPlaying, handlePlayPause, ...audioPlayerProps } = useAudioPlayer(
-    track.id
+    track.id,
+    track.audioFile
   );
 
   return (

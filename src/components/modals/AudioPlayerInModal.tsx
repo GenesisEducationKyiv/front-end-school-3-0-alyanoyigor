@@ -21,7 +21,7 @@ export function AudioPlayerInModal({ src, trackId }: AudioPlayerInModalProps) {
     handleTimeUpdate,
     handleLoadedMetadata,
     formatTime,
-  } = useAudioPlayer(trackId + 'modal');
+  } = useAudioPlayer(trackId + 'modal', src);
 
   return (
     <div className="w-full">

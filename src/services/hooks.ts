@@ -1,4 +1,9 @@
-import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import {
   CreateTrackDto,
@@ -25,15 +30,23 @@ export const useTracks = (params?: Partial<QueryParams>) => {
 };
 
 export const useCreateTrack = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (data: CreateTrackDto) => createTrack(data),
+    mutationKey: ['add-track'],
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['tracks'] }),
   });
 };
 
 export const useUpdateTrack = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateTrackDto }) =>
       updateTrack(id, data),
+    mutationKey: ['update-track'],
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['tracks'] }),
   });
 };
 
@@ -43,12 +56,10 @@ export const useDeleteTrack = () => {
   });
 };
 
-// TODO: Issue with multiple genre call in network
 export const useGenres = () => {
   return useQuery({
     queryKey: ['genres'],
     queryFn: () => getGenres(),
-    // staleTime: 1000 * 60 * 60 * 24, // 24 hours
   });
 };
 
@@ -57,19 +68,17 @@ export const useUploadTrackFile = () => {
     mutationFn: async ({
       trackId,
       formData,
-      onProgress,
     }: {
       trackId: string;
       formData: FormData;
-      onProgress: (progress: number) => void;
     }) => {
-      return uploadTrackFile(trackId, formData, onProgress);
+      return uploadTrackFile(trackId, formData);
     },
   });
 };
 
 export const useDeleteTrackFile = () => {
   return useMutation({
-    mutationFn: async (trackId: string) => deleteTrackFile(trackId),
+    mutationFn: ({ id }: { id: string }) => deleteTrackFile(id),
   });
 };

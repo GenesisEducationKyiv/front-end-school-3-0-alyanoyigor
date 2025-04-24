@@ -7,8 +7,8 @@ interface UseAudioPlayerReturn {
   isDirty: boolean;
   currentTime: number;
   duration: number;
-  progressRef: React.MutableRefObject<HTMLDivElement | null>;
-  audioRef: React.MutableRefObject<HTMLAudioElement | null>;
+  progressRef: React.RefObject<HTMLDivElement | null>;
+  audioRef: React.RefObject<HTMLAudioElement | null>;
   handlePlayPause: () => void;
   handleMute: () => void;
   handleSeek: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -17,7 +17,10 @@ interface UseAudioPlayerReturn {
   formatTime: (time: number) => string;
 }
 
-export function useAudioPlayer(id: string): UseAudioPlayerReturn {
+export function useAudioPlayer(
+  id: string,
+  audioFile?: string
+): UseAudioPlayerReturn {
   const { currentPlayingId, setCurrentPlayingId } = useAudioPlayerContext();
 
   const [isPlaying, setIsPlaying] = useState(false);
@@ -27,7 +30,9 @@ export function useAudioPlayer(id: string): UseAudioPlayerReturn {
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const prevAudioFile = useRef<string | null>(audioFile);
 
+  // If the current playing id is not the id of the audio file, pause the audio
   useEffect(() => {
     if (currentPlayingId !== id && isPlaying) {
       setIsPlaying(false);
@@ -36,6 +41,21 @@ export function useAudioPlayer(id: string): UseAudioPlayerReturn {
       }
     }
   }, [currentPlayingId, id, isPlaying]);
+
+  // If the audio file is not available, set the player to the initial state
+  useEffect(() => {
+    if (!audioFile || audioFile !== prevAudioFile.current) {
+      setIsPlaying(false);
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+      setIsDirty(false);
+      setCurrentTime(0);
+      setDuration(0);
+    }
+
+    prevAudioFile.current = audioFile;
+  }, [audioFile]);
 
   const handlePlayPause = () => {
     if (audioRef.current) {
@@ -112,4 +132,4 @@ export function useAudioPlayer(id: string): UseAudioPlayerReturn {
     handleLoadedMetadata,
     formatTime,
   };
-} 
+}

@@ -24,7 +24,7 @@ export function TrackAudioPlayer({
   isDirty,
 }: TrackAudioPlayerProps) {
   return (
-    <div className="absolute bottom-2 left-4 right-4">
+    <div className="absolute bottom-2 left-6 right-6">
       <div className="w-full">
         <audio
           ref={audioRef}

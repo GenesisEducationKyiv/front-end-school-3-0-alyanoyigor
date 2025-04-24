@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from 'react';
+import { useRef, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -16,7 +16,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { AudioPlayerInModal } from './AudioPlayerInModal';
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
@@ -56,8 +55,6 @@ export default function ModalTrackUpload({
   disableAutoFocus = false,
 }: ModalTrackUploadProps) {
   const queryClient = useQueryClient();
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { mutateAsync: uploadFile, isPending: isUploadPending } =
@@ -69,50 +66,40 @@ export default function ModalTrackUpload({
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = async (data: FormData) => {
-    try {
-      setIsUploading(true);
-      setUploadProgress(0);
+  const onSubmit = (data: FormData) => {
+    setOpen(ModalStateEnum.Closed);
 
-      const formData = new FormData();
-      formData.append('file', data.file);
+    const formData = new FormData();
+    formData.append('file', data.file);
 
-      await uploadFile({
+    toast.promise(
+      uploadFile({
         trackId: track.id,
         formData,
-        onProgress: (progress) => {
-          setUploadProgress(progress);
-        },
-      });
+      }),
+      {
+        loading: 'Uploading...',
+        success: () => {
+          handleResetFile();
+          queryClient.invalidateQueries({ queryKey: ['tracks'] });
 
-      toast.success('Success', {
-        description: 'File uploaded successfully',
-      });
-      form.reset();
-      setOpen(ModalStateEnum.Closed);
-      queryClient.invalidateQueries({ queryKey: ['tracks'] });
-    } catch (error) {
-      toast.error('Error', {
-        description: 'Failed to upload file',
-      });
-    } finally {
-      setIsUploading(false);
-      setUploadProgress(0);
-    }
+          return 'File uploaded successfully';
+        },
+        error: 'Failed to upload file',
+      }
+    );
   };
 
-  const handleDeleteFile = async () => {
-    try {
-      await deleteFile(track.id);
-      toast.success('Success', {
-        description: 'File deleted successfully',
-      });
-      queryClient.invalidateQueries({ queryKey: ['tracks'] });
-    } catch (error) {
-      toast.error('Error', {
-        description: 'Failed to delete file',
-      });
-    }
+  const handleDeleteFile = () => {
+    toast.promise(deleteFile({ id: track.id }), {
+      loading: 'Deleting...',
+      success: () => {
+        queryClient.invalidateQueries({ queryKey: ['tracks'] });
+
+        return 'File deleted successfully';
+      },
+      error: 'Failed to delete file',
+    });
   };
 
   const handleResetFile = () => {
@@ -200,7 +187,7 @@ export default function ModalTrackUpload({
             {file && (
               <div className="flex items-center flex-col  justify-between p-2 pl-4 border rounded-md space-y-2">
                 <div className="flex items-center justify-between w-full">
-                  <span className="text-sm truncate">
+                  <span className="text-sm truncate max-w-[200px] md:max-w-[300px]">
                     {file.name}
                   </span>
                   <Button
@@ -214,15 +201,6 @@ export default function ModalTrackUpload({
                 </div>
 
                 <AudioPlayerInModal src={audioSrc} trackId={track.id} />
-              </div>
-            )}
-
-            {isUploading && (
-              <div className="space-y-2">
-                <Progress value={uploadProgress} className="w-full" />
-                <p className="text-sm text-muted-foreground text-center">
-                  Uploading... {uploadProgress}%
-                </p>
               </div>
             )}
           </div>

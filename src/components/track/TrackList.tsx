@@ -1,54 +1,30 @@
-import { XIcon } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { z } from 'zod';
+import { useTracks } from '@/services/hooks';
+import { CreateTrackDto, SortField, Track, UpdateTrackDto } from '@/types';
 
-import { useDebounce } from '@/hooks/useDebounce';
-import { useGenres, useTracks } from '@/services/hooks';
-import { SortField, Track } from '@/types';
-import { sortFieldOptions } from '@/consts';
-
-import { GenreFilter } from '../GenreFilter';
 import { TrackItem } from './TrackItem';
-import { Pagination } from '../Pagination';
 import { TrackItemSkeleton } from './TrackItemSkeleton';
-import { Button } from '../ui/button';
-import { SearchTrack } from '../SearchTrack';
-import { SortTrack } from '../SortTrack';
+import { Pagination } from '../Pagination';
+import { useMutationState } from '@tanstack/react-query';
 
-const SortFieldSchema = z.enum(
-  Object.keys(sortFieldOptions) as [string, ...string[]]
-);
+interface TrackListProps {
+  page: number;
+  sortField: SortField | null;
+  debouncedSearchTerm: string;
+  selectedGenre: string | null;
+  setPage: (page: number) => void;
+  genres: string[];
+}
 
-export function TrackList() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const initialPage = Number(searchParams.get('page')) || 1;
-  const [page, setPage] = useState(initialPage);
-
-  const { data: genres, isPending: isGenresPending } = useGenres();
-
-  const sortValueQuery = SortFieldSchema.safeParse(searchParams.get('sort'));
-  const selectedGenresQuery = genres
-    ? z
-        .enum(genres as [string, ...string[]])
-        .safeParse(searchParams.get('genre'))
-    : { success: false, data: '' };
-
-  const [sortField, setSortField] = useState<SortField | null>(
-    sortValueQuery.success ? (sortValueQuery.data as SortField) : null
-  );
-  const [searchTerm, setSearchTerm] = useState(
-    searchParams.get('search') || ''
-  );
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const [selectedGenre, setSelectedGenre] = useState<string | null>(
-    selectedGenresQuery.success && selectedGenresQuery.data
-      ? selectedGenresQuery.data
-      : null
-  );
-
+export function TrackList({
+  page,
+  sortField,
+  debouncedSearchTerm,
+  selectedGenre,
+  setPage,
+  genres,
+}: TrackListProps) {
   const {
-    data: tracks,
+    data: tracksFetchData,
     isPending,
     error,
   } = useTracks({
@@ -58,25 +34,15 @@ export function TrackList() {
     ...(selectedGenre && { genre: selectedGenre }),
   });
 
-  // Change the search params when the page, sort field, search term, or selected genre changes
-  useEffect(() => {
-    const params: Record<string, string> = {};
-    if (page > 1) params.page = page.toString();
-    if (sortField) params.sort = sortField;
-    if (debouncedSearchTerm) params.search = debouncedSearchTerm;
-    if (selectedGenre) params.genre = selectedGenre;
-
-    setSearchParams(params);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, sortField, debouncedSearchTerm, selectedGenre]);
-
-  // Reset the page to 1 when the search term, selected genre, or sort field changes
-  useEffect(() => {
-    if (page !== initialPage && page > 1) {
-      setPage(1);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearchTerm, selectedGenre, sortField]);
+  const optimisticNewTrack = useMutationState({
+    filters: { mutationKey: ['add-track'], status: 'pending' },
+    select: (mutation) => mutation.state.variables as CreateTrackDto,
+  });
+  const optimisticUpdatedTrack = useMutationState({
+    filters: { mutationKey: ['update-track'], status: 'pending' },
+    select: (mutation) =>
+      mutation.state.variables as { id: string; data: UpdateTrackDto },
+  });
 
   if (isPending) {
     return (
@@ -96,50 +62,47 @@ export function TrackList() {
     );
   }
 
+  const { data, meta: pagination } = tracksFetchData;
+  const tracks = [
+    ...optimisticNewTrack.map((track) => ({
+      ...track,
+      id: 'optimistic-' + Math.random(),
+      slug: track.title.toLowerCase().replace(/\s+/g, '-'),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    })),
+    ...data.map((track) => {
+      if (
+        optimisticUpdatedTrack[0] &&
+        track.id === optimisticUpdatedTrack[0].id
+      ) {
+        return {
+          ...track,
+          ...optimisticUpdatedTrack[0].data,
+        };
+      }
+
+      return track;
+    }),
+  ];
+
   return (
-    <div>
-      <div className="flex flex-col gap-4 mb-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-1 gap-2">
-          <SearchTrack searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-        </div>
-        <div className="flex items-center gap-2">
-          {sortField ? (
-            <Button
-              variant="outline"
-              onClick={() => setSortField(null)}
-              className="flex justify-between min-w-32 text-muted-foreground"
-            >
-              {sortFieldOptions[sortField]}
-              <XIcon className="h-4 w-4" />
-            </Button>
-          ) : (
-            <SortTrack sortField={sortField} setSortField={setSortField} />
-          )}
-        </div>
-      </div>
-
-      <GenreFilter
-        genres={genres || []}
-        selectedGenre={selectedGenre}
-        onSelect={setSelectedGenre}
-        disabled={isGenresPending}
-      />
-
+    <>
       <div className="mt-8 space-y-4">
-        {tracks.data.map((track: Track) => (
-          <TrackItem key={track.id} track={track} genres={genres || []} />
+        {tracks.map((track: Track) => (
+          <TrackItem key={track.id} track={track} genres={genres} />
         ))}
       </div>
 
-      {tracks.meta.totalPages > 1 && (
+      {pagination.totalPages > 1 && (
         <div className="mt-8">
           <Pagination
-            currentPage={tracks.meta.page}
-            totalPages={tracks.meta.totalPages}
+            currentPage={pagination.page}
+            totalPages={pagination.totalPages}
             onPageChange={setPage}
           />
         </div>
       )}
-    </div>
+    </>
   );
 }

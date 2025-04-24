@@ -1,33 +1,40 @@
 import { Button } from './ui/button';
+import { Skeleton } from './ui/skeleton';
 
 interface GenreFilterProps {
-  genres: string[];
   selectedGenre: string | null;
   onSelect: (genre: string | null) => void;
-  disabled?: boolean;
+  genres?: string[];
+  isGenresPending?: boolean;
 }
 
 export function GenreFilter({
   genres,
   selectedGenre,
   onSelect,
-  disabled = false,
+  isGenresPending = false,
 }: GenreFilterProps) {
   return (
     <div className="flex flex-wrap gap-2">
-      {genres.map((genre) => (
-        <Button
-          key={genre}
-          variant={selectedGenre === genre ? 'default' : 'outline'}
-          size="sm"
-          onClick={() =>
-            selectedGenre === genre ? onSelect(null) : onSelect(genre)
-          }
-          disabled={disabled}
-        >
-          {genre}
-        </Button>
-      ))}
+      {isGenresPending &&
+        Array.from({ length: 10 }).map((_, index) => (
+          <Skeleton key={index} className="h-8 w-20" />
+        ))}
+
+      {genres &&
+        genres.map((genre) => (
+          <Button
+            key={genre}
+            variant={selectedGenre === genre ? 'default' : 'outline'}
+            size="sm"
+            onClick={() =>
+              selectedGenre === genre ? onSelect(null) : onSelect(genre)
+            }
+            disabled={isGenresPending}
+          >
+            {genre}
+          </Button>
+        ))}
     </div>
   );
-} 
+}
