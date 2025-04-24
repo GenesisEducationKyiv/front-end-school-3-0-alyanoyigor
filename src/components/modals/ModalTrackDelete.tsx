@@ -36,9 +36,9 @@ export default function ModalTrackDelete({
         await deleteTrack({ id: track.id });
       },
       {
-        loading: 'Deleting track...',
-        success: 'Track deleted successfully',
-        error: 'Failed to delete track',
+        loading: <span data-testid="toast-loading">Deleting track...</span>,
+        success: <span data-testid="toast-success">Track deleted successfully</span>,
+        error: <span data-testid="toast-error">Failed to delete track</span>,
       }
     );
     setOpen(ModalStateEnum.Closed);

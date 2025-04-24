@@ -78,27 +78,27 @@ export default function ModalTrackUpload({
         formData,
       }),
       {
-        loading: 'Uploading...',
+        loading: <span data-testid="toast-loading">Uploading...</span>,
         success: () => {
           handleResetFile();
           queryClient.invalidateQueries({ queryKey: ['tracks'] });
 
-          return 'File uploaded successfully';
+          return <span data-testid="toast-success">File uploaded successfully</span>;
         },
-        error: 'Failed to upload file',
+        error: <span data-testid="toast-error">Failed to upload file</span>,
       }
     );
   };
 
   const handleDeleteFile = () => {
     toast.promise(deleteFile({ id: track.id }), {
-      loading: 'Deleting...',
+      loading: <span data-testid="toast-loading">Deleting...</span>,
       success: () => {
         queryClient.invalidateQueries({ queryKey: ['tracks'] });
 
-        return 'File deleted successfully';
+        return <span data-testid="toast-success">File deleted successfully</span>;
       },
-      error: 'Failed to delete file',
+      error: <span data-testid="toast-error">Failed to delete file</span>,
     });
   };
 

@@ -45,12 +45,12 @@ export default function ModalTrackCreate({
 
   const onSubmit = async (data: CreateTrackDto) => {
     toast.promise(createTrack(data), {
-      loading: 'Creating track...',
+      loading: <span data-testid="toast-loading">Creating track...</span>,
       success: () => {
         form.reset();
-        return 'Track created successfully';
+        return <span data-testid="toast-success">Track created successfully</span>;
       },
-      error: 'Failed to create track',
+      error: <span data-testid="toast-error">Failed to create track</span>,
     });
 
     setOpen(ModalStateEnum.Closed);

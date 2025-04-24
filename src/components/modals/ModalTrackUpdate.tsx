@@ -80,12 +80,12 @@ export default function ModalTrackUpdate({
     );
 
     toast.promise(updateTrack({ id: track.id, data: updatedData }), {
-      loading: 'Saving...',
+      loading: <span data-testid="toast-loading">Saving...</span>,
       success: () => {
         form.reset();
-        return 'Track updated successfully';
+        return <span data-testid="toast-success">Track updated successfully</span>;
       },
-      error: 'Failed to update track',
+      error: <span data-testid="toast-error">Failed to update track</span>,
     });
 
     setOpen(ModalStateEnum.Closed);
