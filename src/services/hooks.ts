@@ -62,6 +62,7 @@ export const useDeleteTrack = () => {
 
 export const useGenres = () => {
   return useQuery({
+    staleTime: 1000 * 60 * 5, // 5 minutes
     queryKey: ['genres'],
     queryFn: () => getGenres(),
   });
