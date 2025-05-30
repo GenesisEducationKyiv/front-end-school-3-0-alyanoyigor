@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import { useUpdateTrack } from '@/services/hooks';
-import { ModalState, ModalStateEnum, Track, UpdateTrackDto } from '@/types';
+import { ModalState, ModalStateSchema, Track, UpdateTrackDto } from '@/types';
 import {
   Dialog,
   DialogContent,
@@ -21,7 +21,7 @@ import { GenreSelect } from '../filters/GenreSelect';
 
 interface ModalTrackUpdateProps {
   track: Track;
-  genres: string[];
+  genres: string[] | undefined;
   open: ModalState;
   setOpen: (open: ModalState) => void;
 }
@@ -88,7 +88,7 @@ export default function ModalTrackUpdate({
       error: <span data-testid="toast-error">Failed to update track</span>,
     });
 
-    setOpen(ModalStateEnum.Closed);
+    setOpen(ModalStateSchema.Enum.closed);
   };
 
   const handleAddGenre = (genre: string) => {
@@ -105,9 +105,9 @@ export default function ModalTrackUpdate({
 
   return (
     <Dialog
-      open={open === ModalStateEnum.Open}
+      open={open === ModalStateSchema.Enum.open}
       onOpenChange={(open) => {
-        setOpen(open ? ModalStateEnum.Open : ModalStateEnum.Closed);
+        setOpen(open ? ModalStateSchema.Enum.open : ModalStateSchema.Enum.closed);
         if (!open) {
           form.reset();
         }

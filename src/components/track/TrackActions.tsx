@@ -1,7 +1,7 @@
 import { lazy, useState } from "react";
 import { Pencil, Upload, Trash } from "lucide-react";
 
-import { ModalState, ModalStateEnum, Track } from "@/types";
+import { ModalState, ModalStateSchema, Track } from "@/types";
 import { Button } from "../ui/button";
 import { LazyModal } from "../modals/LazyModal";
 
@@ -9,15 +9,20 @@ const ModalTrackUpload = lazy(() => import('@/components/modals/ModalTrackUpload
 const ModalTrackUpdate = lazy(() => import('@/components/modals/ModalTrackUpdate'));
 const ModalTrackDelete = lazy(() => import('@/components/modals/ModalTrackDelete'));
 
-export function TrackActions({ track, genres }: { track: Track, genres: string[] }) {
+interface TrackActionsProps {
+  track: Track;
+  genres: string[] | undefined;
+}
+
+export function TrackActions({ track, genres }: TrackActionsProps) {
   const [openModalDelete, setOpenModalDelete] = useState<ModalState>(
-    ModalStateEnum.Idle
+    ModalStateSchema.Enum.idle
   );
   const [openModalUpload, setOpenModalUpload] = useState<ModalState>(
-    ModalStateEnum.Idle
+    ModalStateSchema.Enum.idle
   );
   const [openModalUpdate, setOpenModalUpdate] = useState<ModalState>(
-    ModalStateEnum.Idle
+    ModalStateSchema.Enum.idle
   );    
 
   return (
@@ -27,7 +32,7 @@ export function TrackActions({ track, genres }: { track: Track, genres: string[]
         size="icon"
         className="text-muted-foreground hover:text-primary focus-within:text-primary"
         aria-label="Edit track"
-        onClick={() => setOpenModalUpdate(ModalStateEnum.Open)}
+        onClick={() => setOpenModalUpdate(ModalStateSchema.Enum.open)}
         disabled={track.id.includes('optimistic')}
         aria-disabled={track.id.includes('optimistic')}
         data-testid={`edit-track-${track.id}`}
@@ -40,7 +45,7 @@ export function TrackActions({ track, genres }: { track: Track, genres: string[]
         size="icon"
         className="text-muted-foreground hover:text-primary focus-within:text-primary"
         aria-label="Upload track"
-        onClick={() => setOpenModalUpload(ModalStateEnum.Open)}
+        onClick={() => setOpenModalUpload(ModalStateSchema.Enum.open)}
         disabled={track.id.includes('optimistic')}
         aria-disabled={track.id.includes('optimistic')}
         data-testid={`upload-track-${track.id}`}
@@ -53,7 +58,7 @@ export function TrackActions({ track, genres }: { track: Track, genres: string[]
         size="icon"
         className="text-muted-foreground hover:text-primary focus-within:text-primary"
         aria-label="Delete track"
-        onClick={() => setOpenModalDelete(ModalStateEnum.Open)}
+        onClick={() => setOpenModalDelete(ModalStateSchema.Enum.open)}
         disabled={track.id.includes('optimistic')}
         aria-disabled={track.id.includes('optimistic')}
         data-testid={`delete-track-${track.id}`}
@@ -61,7 +66,7 @@ export function TrackActions({ track, genres }: { track: Track, genres: string[]
         <Trash className="w-4 h-4" />
       </Button>
 
-      {openModalUpdate !== ModalStateEnum.Idle && (
+      {openModalUpdate !== ModalStateSchema.Enum.idle && (
         <LazyModal>
           <ModalTrackUpdate
             track={track}
@@ -72,7 +77,7 @@ export function TrackActions({ track, genres }: { track: Track, genres: string[]
         </LazyModal>
       )}
 
-      {openModalUpload !== ModalStateEnum.Idle && (
+      {openModalUpload !== ModalStateSchema.Enum.idle && (
         <LazyModal>
           <ModalTrackUpload
             track={track}
@@ -83,7 +88,7 @@ export function TrackActions({ track, genres }: { track: Track, genres: string[]
         </LazyModal>
       )}
 
-      {openModalDelete !== ModalStateEnum.Idle && (
+      {openModalDelete !== ModalStateSchema.Enum.idle && (
         <LazyModal>
           <ModalTrackDelete
             track={track}

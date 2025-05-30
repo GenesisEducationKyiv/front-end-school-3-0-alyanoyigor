@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import { useGenres, useCreateTrack } from '@/services/hooks';
-import { CreateTrackDto, ModalState, ModalStateEnum } from '@/types';
+import { CreateTrackDto, ModalState, ModalStateSchema } from '@/types';
 import {
   Dialog,
   DialogContent,
@@ -53,7 +53,7 @@ export default function ModalTrackCreate({
       error: <span data-testid="toast-error">Failed to create track</span>,
     });
 
-    setOpen(ModalStateEnum.Closed);
+    setOpen(ModalStateSchema.Enum.closed);
   };
 
   const handleAddGenre = useCallback(
@@ -79,9 +79,9 @@ export default function ModalTrackCreate({
 
   return (
     <Dialog
-      open={open === ModalStateEnum.Open}
+      open={open === ModalStateSchema.Enum.open}
       onOpenChange={(open) => {
-        setOpen(open ? ModalStateEnum.Open : ModalStateEnum.Closed);
+        setOpen(open ? ModalStateSchema.Enum.open : ModalStateSchema.Enum.closed);
         if (!open) {
           form.reset();
         }
@@ -129,7 +129,7 @@ export default function ModalTrackCreate({
                 type="button"
                 variant="outline"
                 onClick={() => {
-                  setOpen(ModalStateEnum.Closed);
+                  setOpen(ModalStateSchema.Enum.closed);
                   form.reset();
                 }}
                 disabled={isPending}

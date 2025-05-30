@@ -2,6 +2,8 @@
  * Core domain entities
  */
 
+import { z } from "zod";
+
 /**
  * Track entity representing a music track in the system
  */
@@ -66,8 +68,6 @@ export interface UpdateTrackDto {
   audioFile?: string;
 }
 
-export type SortField = 'title' | 'artist' | 'album' | 'createdAt';
-
 /**
  * Query parameters for listing and filtering tracks
  */
@@ -98,13 +98,9 @@ export interface TracksResponse {
   };
 }
 
-export enum ModalStateEnum {
-  Idle = 'idle',
-  Open = 'open',
-  Closed = 'closed',
-}
+export const ModalStateSchema = z.enum(['idle', 'open', 'closed']);
 
-export type ModalState = (typeof ModalStateEnum)[keyof typeof ModalStateEnum];
+export type ModalState = z.infer<typeof ModalStateSchema>;
 
 export type TrackFormField = {
   name: keyof CreateTrackDto;
@@ -112,3 +108,7 @@ export type TrackFormField = {
   placeholder: string;
   testId: string;
 };
+
+export const SortFieldSchema = z.enum(['title', 'artist', 'album', 'createdAt']);
+
+export type SortField = z.infer<typeof SortFieldSchema>;
