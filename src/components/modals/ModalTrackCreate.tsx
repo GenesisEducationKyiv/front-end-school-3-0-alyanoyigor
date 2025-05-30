@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useCallback } from 'react';
 import { toast } from 'sonner';
 
 import { useGenres, useCreateTrack } from '@/services/hooks';
@@ -18,7 +19,6 @@ import { trackFormFields } from '@/consts';
 
 import { InputField } from '../InputField';
 import { GenreSelect } from '../filters/GenreSelect';
-import { useCallback } from 'react';
 
 interface ModalTrackCreateProps {
   open: ModalState;
@@ -77,6 +77,11 @@ export default function ModalTrackCreate({
     [form]
   );
 
+  const handleClickCancel = useCallback(() => {
+    setOpen(ModalStateSchema.Enum.closed);
+    form.reset();
+  }, [form]);
+
   return (
     <Dialog
       open={open === ModalStateSchema.Enum.open}
@@ -128,10 +133,7 @@ export default function ModalTrackCreate({
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => {
-                  setOpen(ModalStateSchema.Enum.closed);
-                  form.reset();
-                }}
+                onClick={handleClickCancel}
                 disabled={isPending}
                 aria-disabled={isPending}
               >

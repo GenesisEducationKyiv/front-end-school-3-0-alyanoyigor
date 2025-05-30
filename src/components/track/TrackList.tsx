@@ -1,10 +1,10 @@
 import { useTracks } from '@/services/hooks';
-import { CreateTrackDto, SortField, Track, UpdateTrackDto } from '@/types';
+import { SortField, Track } from '@/types';
+import { useOptimisticTracks } from '@/hooks/useOptimisticTracks';
 
 import { TrackItem } from './TrackItem';
 import { TrackItemSkeleton } from './TrackItemSkeleton';
 import { Pagination } from '../Pagination';
-import { useMutationState } from '@tanstack/react-query';
 
 interface TrackListProps {
   page: number;
@@ -23,30 +23,17 @@ export function TrackList({
   setPage,
   genres,
 }: TrackListProps) {
-  const {
-    data: tracksFetchData,
-    isPending,
-    error,
-  } = useTracks({
+  const trackQueryParams = {
     ...(page > 1 && { page }),
-    ...(sortField && { sort: sortField as SortField }),
+    ...(sortField && { sort: sortField }),
     ...(debouncedSearchTerm && { search: debouncedSearchTerm }),
     ...(selectedGenre && { genre: selectedGenre }),
-  });
+  };
 
-  const optimisticNewTracks = useMutationState({
-    filters: { mutationKey: ['add-track'], status: 'pending' },
-    select: (mutation) => mutation.state.variables as CreateTrackDto,
-  });
-  const [optimisticUpdatedTrack] = useMutationState({
-    filters: { mutationKey: ['update-track'], status: 'pending' },
-    select: (mutation) =>
-      mutation.state.variables as { id: string; data: UpdateTrackDto },
-  });
-  const [optimisticDeletedTrack] = useMutationState({
-    filters: { mutationKey: ['delete-track'], status: 'pending' },
-    select: (mutation) => mutation.state.variables as { id: string },
-  });
+  const { data: tracksData, isPending, error } = useTracks(trackQueryParams);
+  const initialTracks = tracksData?.data || [];
+  const pagination = tracksData?.meta;
+  const tracks = useOptimisticTracks(initialTracks);
 
   if (isPending) {
     return (
@@ -65,36 +52,7 @@ export function TrackList({
       </div>
     );
   }
-
-  const { data, meta: pagination } = tracksFetchData;
-  const tracks = [
-    ...optimisticNewTracks.map((track) => ({
-      ...track,
-      id: 'optimistic-' + Math.random(),
-      slug: track.title.toLowerCase().replace(/\s+/g, '-'),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    })),
-    ...data
-      .map((track) => {
-        if (optimisticUpdatedTrack && track.id === optimisticUpdatedTrack.id) {
-          return {
-            ...track,
-            ...optimisticUpdatedTrack.data,
-          };
-        }
-
-        return track;
-      })
-      .filter((track) => {
-        if (optimisticDeletedTrack && track.id === optimisticDeletedTrack.id) {
-          return false;
-        }
-
-        return true;
-      }),
-  ];
-
+  
   return (
     <>
       <div className="mt-8 space-y-4">
@@ -103,7 +61,7 @@ export function TrackList({
         ))}
       </div>
 
-      {pagination.totalPages > 1 && (
+      {pagination && pagination.totalPages > 1 && (
         <div className="mt-8">
           <Pagination
             currentPage={pagination.page}

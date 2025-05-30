@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { z } from "zod";
-import { SortField, SortFieldSchema } from "@/types";
+import { useEffect, useMemo, useState } from 'react';
+import { z } from 'zod';
+import { SortField, SortFieldSchema } from '@/types';
 
 export function useSortField(searchParamsSortValue: string | null) {
   const sortValidatedData = SortFieldSchema.safeParse(searchParamsSortValue);
@@ -19,20 +19,24 @@ export function useSelectedGenre(
   genres: string[] | undefined,
   searchParamsGenre: string | null
 ) {
-  let initialSelectedGenre: string | null = null;
-
-  if (genres && genres.length > 0) {
-    const selectedGenresQuery = z
-      .enum(genres as [string, ...string[]])
-      .safeParse(searchParamsGenre);
-    if (selectedGenresQuery.success) {
-      initialSelectedGenre = selectedGenresQuery.data;
+  const initialSelectedGenre = useMemo(() => {
+    if (genres && genres.length > 0) {
+      const selectedGenresQuery = z
+        .enum(genres as [string, ...string[]])
+        .safeParse(searchParamsGenre);
+      if (selectedGenresQuery.success) {
+        return selectedGenresQuery.data;
+      }
     }
-  }
 
-  const [selectedGenre, setSelectedGenre] = useState<string | null>(
-    initialSelectedGenre
-  );
+    return null;
+  }, [genres, searchParamsGenre]);
+
+  const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
+
+  useEffect(() => {
+    setSelectedGenre(initialSelectedGenre);
+  }, [initialSelectedGenre]);
 
   return { selectedGenre, setSelectedGenre };
 }

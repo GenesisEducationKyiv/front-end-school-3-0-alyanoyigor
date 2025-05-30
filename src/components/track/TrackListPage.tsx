@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { useDebounce } from '@/hooks/useDebounce';
@@ -18,9 +18,10 @@ export function TrackListPage() {
   const { data: genres, isPending: isGenresPending } = useGenres();
 
   const { sortField, setSortField } = useSortField(searchParams.get('sort'));
+  const searchParamsGenre = useRef<string | null>(searchParams.get('genre'));
   const { selectedGenre, setSelectedGenre } = useSelectedGenre(
     genres,
-    searchParams.get('genre')
+    searchParamsGenre.current
   );
 
   const [searchTerm, setSearchTerm] = useState(

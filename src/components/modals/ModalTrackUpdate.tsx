@@ -18,6 +18,7 @@ import { trackFormFields } from '@/consts';
 import { InputField } from '../InputField';
 import { UpdateTrackSchema } from '@/validation';
 import { GenreSelect } from '../filters/GenreSelect';
+import { getDirtyValues } from '@/lib/getDirtyValues';
 
 interface ModalTrackUpdateProps {
   track: Track;
@@ -53,33 +54,9 @@ export default function ModalTrackUpdate({
 
   const onSubmit = async (data: UpdateTrackDto) => {
     // Add to request only changed fields
-    const isArrayEqual = (a: string[], b: string[]) => {
-      return (
-        a.length === b.length && a.every((value, index) => value === b[index])
-      );
-    };
-    const updatedData = Object.keys(data).reduce<Partial<UpdateTrackDto>>(
-      (acc, key) => {
-        const typedKey = key as keyof UpdateTrackDto;
-        if (!typedKey) return acc;
+    const changedData = getDirtyValues(form.formState.dirtyFields, data);
 
-        if (
-          (Array.isArray(data[typedKey]) &&
-            !isArrayEqual(
-              data[typedKey] as string[],
-              track[typedKey] as string[]
-            )) ||
-          (!Array.isArray(data[typedKey]) &&
-            data[typedKey] !== track[typedKey as keyof Track])
-        ) {
-          acc[typedKey] = data[typedKey] as (string[] & string) | undefined;
-        }
-        return acc;
-      },
-      {}
-    );
-
-    toast.promise(updateTrack({ id: track.id, data: updatedData }), {
+    toast.promise(updateTrack({ id: track.id, data: changedData }), {
       loading: <span data-testid="toast-loading">Saving...</span>,
       success: () => {
         form.reset();
