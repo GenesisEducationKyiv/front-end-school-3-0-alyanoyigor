@@ -2,7 +2,7 @@
  * Core domain entities
  */
 
-import { z } from "zod";
+import { z } from 'zod';
 
 /**
  * Track entity representing a music track in the system
@@ -88,14 +88,6 @@ export interface QueryParams {
   artist?: string;
 }
 
-export interface TrackFormValues {
-  title: string;
-  artist: string;
-  album: string;
-  genres: string[];
-  coverImage: string;
-}
-
 export interface TracksResponse {
   data: Track[];
   meta: {
@@ -117,6 +109,11 @@ export type TrackFormField = {
   testId: string;
 };
 
-export const SortFieldSchema = z.enum(['title', 'artist', 'album', 'createdAt']);
+export const SortFieldSchema = z.enum([
+  'title',
+  'artist',
+  'album',
+  'createdAt',
+]);
 
 export type SortField = z.infer<typeof SortFieldSchema>;
