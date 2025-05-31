@@ -7,7 +7,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { useDeleteTrackFile, useUploadTrackFile } from '@/services/hooks';
-import { ModalState, ModalStateEnum, Track } from '@/types';
+import { ModalState, ModalStateSchema, Track } from '@/types';
 import {
   Dialog,
   DialogContent,
@@ -67,7 +67,7 @@ export default function ModalTrackUpload({
   });
 
   const onSubmit = (data: FormData) => {
-    setOpen(ModalStateEnum.Closed);
+    setOpen(ModalStateSchema.Enum.closed);
 
     const formData = new FormData();
     formData.append('file', data.file);
@@ -126,9 +126,9 @@ export default function ModalTrackUpload({
 
   return (
     <Dialog
-      open={open === ModalStateEnum.Open}
+      open={open === ModalStateSchema.Enum.open}
       onOpenChange={(open) => {
-        setOpen(open ? ModalStateEnum.Open : ModalStateEnum.Closed);
+        setOpen(open ? ModalStateSchema.Enum.open : ModalStateSchema.Enum.closed);
         if (!open) {
           handleResetFile();
         }
