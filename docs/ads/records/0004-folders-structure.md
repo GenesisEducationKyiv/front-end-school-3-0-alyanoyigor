@@ -4,10 +4,6 @@
 
 As our application grows, we want to enforce a clear separation of concerns and make the codebase easy to maintain, test, and scale.
 
-- The project is a React SPA with business logic, API integration, and UI.
-- We want to separate UI, business logic, and presentation logic.
-- The team values testability, maintainability, and the ability to scale or refactor easily.
-
 ## Decision
 
 **We will organize the `src` directory by MVP layers, grouping code by feature/module where appropriate.**
@@ -24,7 +20,7 @@ src/
         trackStore.ts
         trackValidation.ts
         trackTypes.ts
-      presenter/                  # Presentation logic (hooks, state management, data transformation)
+      presenter/                  # Presentation logic (hooks, data transformation)
         useTrackPresenter.ts
         useTrackListPresenter.ts
       view/                       # UI components (React components, pages, modals)
@@ -60,35 +56,22 @@ src/
 
 ## Rationale
 
-### MVP Separation of Concerns
-- **Module:** Handles all business logic, data fetching, state, and validation for a feature.
-- **Presenter:** Contains presentation logic, transforms data for the view, and mediates between the module and the view.
-- **View:** Pure UI components, focused on rendering and user interaction, with minimal logic.
-
-### Testability & Maintainability
-- Presenters can be unit tested independently of the UI.
-- Modules can be tested for business logic and data correctness.
-- Views are simple and reusable.
-
-### Scalability & Flexibility
-- New features are added as new modules, each with its own MVP structure.
-- Shared code is centralized in the `shared/` directory.
-- Easy to refactor or swap implementations at any layer.
+An MVP-based structure should improve several aspects of the project by:
+- Implementing separation of concerns.
+- Improving testability and maintainability.
+- Enhancing scalability and flexibility.
 
 ## Alternatives Considered
 
-| Structure Type         | Pros                                              | Cons                                              |
-|-----------------------|---------------------------------------------------|---------------------------------------------------|
-| **Type-based**        | Simple, familiar                                  | Poor separation of concerns, hard to scale        |
-| **Feature-based**     | Good for large teams/features                     | Can lead to mixed concerns within features        |
-| **Layered (MVP, proposed)** | Clear boundaries, testable, scalable, maintainable | Slightly more complex for small projects          |
+- **Type-based**: Poor separation of concerns, hard to scale.
+- **Feature-based**: Can lead to mixed concerns within features. Overkill for small projects.
 
 ## Consequences
 
 - The codebase will be easier to test, maintain, and scale.
 - Developers can work on different layers independently.
-- Refactoring or swapping implementations (e.g., API, UI) is easier.
-- New features can be added as new modules with their own MVP structure.
+- New developers may need time to understand and adapt to the layered architecture.
+- For very small features, the layered structure might feel like unnecessary overhead.
 
 ## Status
 
