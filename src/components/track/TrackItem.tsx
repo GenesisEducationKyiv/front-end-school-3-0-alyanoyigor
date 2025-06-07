@@ -9,7 +9,7 @@ import { TrackAudioPlayer } from '../audioPlayer/TrackAudioPlayer';
 
 interface TrackItemProps {
   track: Track;
-  genres: string[];
+  genres: string[] | undefined;
 }
 
 export function TrackItem({ track, genres }: TrackItemProps) {

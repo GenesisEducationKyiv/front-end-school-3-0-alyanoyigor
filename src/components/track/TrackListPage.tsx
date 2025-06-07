@@ -1,52 +1,37 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { z } from 'zod';
 
-import { useDebounce } from '@/hooks/useDebounce';
 import { useGenres } from '@/services/hooks';
-import { SortField } from '@/types';
-import { sortFieldOptions } from '@/consts';
+import {
+  usePageField,
+  useSearchField,
+  useSelectedGenre,
+  useSortField,
+} from '@/hooks/useTrackFields';
 
-import { GenreFilter } from './filters/GenreFilter';
-import { SearchTrack } from './filters/SearchTrack';
-import { SortTrack } from './filters/SortTrack';
+import { GenreFilter } from '../filters/GenreFilter';
+import { SearchTrack } from '../filters/SearchTrack';
+import { SortTrack } from '../filters/SortTrack';
 import { TrackList } from './TrackList';
-
-const SortFieldSchema = z.enum(
-  Object.keys(sortFieldOptions) as [string, ...string[]]
-);
 
 export function TrackListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialPage = Number(searchParams.get('page')) || 1;
-  const [page, setPage] = useState(initialPage);
-
   const { data: genres, isPending: isGenresPending } = useGenres();
 
-  const sortValueQuery = SortFieldSchema.safeParse(searchParams.get('sort'));
-  const selectedGenresQuery = genres
-    ? z
-        .enum(genres as [string, ...string[]])
-        .safeParse(searchParams.get('genre'))
-    : { success: false, data: '' };
-
-  const [sortField, setSortField] = useState<SortField | null>(
-    sortValueQuery.success ? (sortValueQuery.data as SortField) : null
+  const { page, setPage } = usePageField(searchParams.get('page'));
+  const { sortField, setSortField } = useSortField(searchParams.get('sort'));
+  const { selectedGenre, setSelectedGenre } = useSelectedGenre(
+    genres,
+    searchParams.get('genre')
   );
-  const [searchTerm, setSearchTerm] = useState(
-    searchParams.get('search') || ''
-  );
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const [selectedGenre, setSelectedGenre] = useState<string | null>(
-    selectedGenresQuery.success && selectedGenresQuery.data
-      ? selectedGenresQuery.data
-      : null
+  const { searchTerm, setSearchTerm, debouncedSearchTerm } = useSearchField(
+    searchParams.get('search')
   );
 
   // Change the search params when the page, sort field, search term, or selected genre changes
   useEffect(() => {
     const params: Record<string, string> = {};
-    if (page > 1) params.page = page.toString();
+    if (page && page > 1) params.page = page.toString();
     if (sortField) params.sort = sortField;
     if (debouncedSearchTerm) params.search = debouncedSearchTerm;
     if (selectedGenre) params.genre = selectedGenre;
@@ -56,7 +41,7 @@ export function TrackListPage() {
 
   // Reset the page to 1 when the search term, selected genre, or sort field changes
   useEffect(() => {
-    if (page !== initialPage && page > 1) {
+    if (page && page > 1) {
       setPage(1);
     }
   }, [debouncedSearchTerm, selectedGenre, sortField]);
@@ -85,7 +70,7 @@ export function TrackListPage() {
         sortField={sortField}
         debouncedSearchTerm={debouncedSearchTerm}
         selectedGenre={selectedGenre}
-        genres={genres || []}
+        genres={genres}
       />
     </div>
   );
