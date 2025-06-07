@@ -1,3 +1,5 @@
+import { Option } from '@mobily/ts-belt';
+
 import { useTracks } from '@/services/hooks';
 import { SortField, Track } from '@/types';
 import { useOptimisticTracks } from '@/hooks/useOptimisticTracks';
@@ -7,10 +9,10 @@ import { TrackItemSkeleton } from './TrackItemSkeleton';
 import { Pagination } from '../Pagination';
 
 interface TrackListProps {
-  page: number;
-  sortField: SortField | null;
-  debouncedSearchTerm: string;
-  selectedGenre: string | null;
+  page: Option<number>;
+  sortField: Option<SortField>;
+  debouncedSearchTerm: Option<string>;
+  selectedGenre: Option<string>;
   setPage: (page: number) => void;
   genres: string[] | undefined;
 }
@@ -24,7 +26,7 @@ export function TrackList({
   genres,
 }: TrackListProps) {
   const trackQueryParams = {
-    ...(page > 1 && { page }),
+    ...(page && page > 1 && { page }),
     ...(sortField && { sort: sortField }),
     ...(debouncedSearchTerm && { search: debouncedSearchTerm }),
     ...(selectedGenre && { genre: selectedGenre }),
@@ -52,7 +54,7 @@ export function TrackList({
       </div>
     );
   }
-  
+
   return (
     <>
       <div className="mt-8 space-y-4">

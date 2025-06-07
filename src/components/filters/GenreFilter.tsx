@@ -1,8 +1,9 @@
+import { Option } from '@mobily/ts-belt';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
 
 interface GenreFilterProps {
-  selectedGenre: string | null;
+  selectedGenre: Option<string>;
   onSelect: (genre: string | null) => void;
   genres?: string[];
   isGenresPending?: boolean;
@@ -18,7 +19,11 @@ export function GenreFilter({
     <div className="flex flex-wrap gap-2">
       {isGenresPending &&
         Array.from({ length: 10 }).map((_, index) => (
-          <Skeleton key={index} className="h-8 w-20" data-testid="loading-indicator" />
+          <Skeleton
+            key={index}
+            className="h-8 w-20"
+            data-testid="loading-indicator"
+          />
         ))}
 
       {genres &&
