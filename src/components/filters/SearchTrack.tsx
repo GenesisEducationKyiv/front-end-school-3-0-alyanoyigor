@@ -1,10 +1,12 @@
-import { XIcon, SearchIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { Option } from '@mobily/ts-belt';
+import { XIcon, SearchIcon } from 'lucide-react';
+
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
 
 interface SearchTrackProps {
-  searchTerm: string;
+  searchTerm: Option<string>;
   setSearchTerm: (searchTerm: string) => void;
 }
 
@@ -15,14 +17,14 @@ export function SearchTrack({ searchTerm, setSearchTerm }: SearchTrackProps) {
       <Input
         id="search"
         placeholder="Search tracks..."
-        value={searchTerm}
+        value={searchTerm || ''}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setSearchTerm(e.target.value);
         }}
         className="pl-10"
         data-testid="search-input"
       />
-      {searchTerm.length > 0 && (
+      {searchTerm && searchTerm.length > 0 && (
         <Button
           onClick={() => setSearchTerm('')}
           variant="ghost"
