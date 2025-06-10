@@ -5,7 +5,7 @@ import { FormLabel } from '../ui/form';
 import { Button } from '../ui/button';
 
 interface GenreSelectProps {
-  availableGenres: string[];
+  availableGenres: string[] | undefined;
   selectedGenres: string[];
   error: FieldError | undefined;
   handleRemoveGenre: (genre: string) => void;
@@ -41,24 +41,30 @@ export function GenreSelect({
         ))}
       </div>
       <div className="flex flex-wrap gap-2">
-        {availableGenres
-          .filter((genre) => !selectedGenres.includes(genre))
-          .map((genre) => (
-            <Button
-              key={genre}
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => handleAddGenre(genre)}
-              className="flex items-center gap-1"
-            >
-              <Plus className="h-3 w-3" />
-              {genre}
-            </Button>
-          ))}
+        {availableGenres &&
+          availableGenres
+            .filter((genre) => !selectedGenres.includes(genre))
+            .map((genre) => (
+              <Button
+                key={genre}
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => handleAddGenre(genre)}
+                className="flex items-center gap-1"
+              >
+                <Plus className="h-3 w-3" />
+                {genre}
+              </Button>
+            ))}
       </div>
       {error && (
-        <p className="text-sm font-medium text-destructive" data-testid="error-genre">{error.message}</p>
+        <p
+          className="text-sm font-medium text-destructive"
+          data-testid="error-genre"
+        >
+          {error.message}
+        </p>
       )}
     </div>
   );

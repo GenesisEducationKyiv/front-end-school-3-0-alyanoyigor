@@ -1,6 +1,6 @@
-import { TrackFormField } from "@/types";
+import { SortField, TrackFormField } from "@/types";
 
-export const sortFieldOptions = {
+export const sortFieldOptions: Record<SortField, string> = {
   title: 'Title',
   artist: 'Artist',
   album: 'Album',
