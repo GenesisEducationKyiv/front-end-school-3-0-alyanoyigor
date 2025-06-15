@@ -30,7 +30,7 @@ Ky in contrast has no transitive dependencies, so it is not vulnerable to Supply
 | ⬇️ Weekly Downloads | ~62m                        | ~2,5m                                                |
 | 🕙 Last Update      | 2025-04-24                  | 2025-04-14                                           |
 | 🐛 Open Issues      | 577                         | 58                                                   |
-| 📦 Size             | 2.16MB                      | 172kB                                                |
+| 📦 Size (gzipped)   | 13.7kB                      | 3.8kB                                                |
 | 👤 Owner reputation | Reputable, but slower fixes | Maintained by Sindre Sorhus (trusted OSS maintainer) |
 
 ## Consequences

@@ -10,3 +10,4 @@ This document provides a chronological log of all Architecture Decision Records 
 - [ADR 0004: Decision to Implement Module-View-Presenter (MVP) Architecture](./records/0004-folders-structure.md)
 - [ADR 0005: Decision to Implement Logging with Sentry](./records/0005-logging.md)
 - [ADR 0006: Decision to Implement Testing with Vitest and React Testing Library](./records/0006-testing.md)
+- [ADR 0007: Decision to Replace Axios with Ky](./records/0007-replace-axios.md)
