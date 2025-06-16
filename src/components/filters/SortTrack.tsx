@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { XIcon } from 'lucide-react';
+import { Option } from '@mobily/ts-belt';
 
 import { SortField } from '@/types';
 import {
@@ -13,7 +14,7 @@ import { sortFieldOptions } from '@/consts';
 import { Button } from '../ui/button';
 
 interface SortTrackProps {
-  sortField: SortField | null;
+  sortField: Option<SortField>;
   setSortField: (sortField: SortField | null) => void;
 }
 

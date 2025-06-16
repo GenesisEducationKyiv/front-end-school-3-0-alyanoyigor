@@ -1,9 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { useDebounce } from '@/hooks/useDebounce';
 import { useGenres } from '@/services/hooks';
-import { useSelectedGenre, useSortField } from '@/hooks/useTrackFields';
+import {
+  usePageField,
+  useSearchField,
+  useSelectedGenre,
+  useSortField,
+} from '@/hooks/useTrackFields';
 
 import { GenreFilter } from '../filters/GenreFilter';
 import { SearchTrack } from '../filters/SearchTrack';
@@ -12,27 +16,22 @@ import { TrackList } from './TrackList';
 
 export function TrackListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialPage = Number(searchParams.get('page')) || 1;
-  const [page, setPage] = useState(initialPage);
-
   const { data: genres, isPending: isGenresPending } = useGenres();
 
+  const { page, setPage } = usePageField(searchParams.get('page'));
   const { sortField, setSortField } = useSortField(searchParams.get('sort'));
-  const searchParamsGenre = useRef<string | null>(searchParams.get('genre'));
   const { selectedGenre, setSelectedGenre } = useSelectedGenre(
     genres,
-    searchParamsGenre.current
+    searchParams.get('genre')
   );
-
-  const [searchTerm, setSearchTerm] = useState(
-    searchParams.get('search') || ''
+  const { searchTerm, setSearchTerm, debouncedSearchTerm } = useSearchField(
+    searchParams.get('search')
   );
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   // Change the search params when the page, sort field, search term, or selected genre changes
   useEffect(() => {
     const params: Record<string, string> = {};
-    if (page > 1) params.page = page.toString();
+    if (page && page > 1) params.page = page.toString();
     if (sortField) params.sort = sortField;
     if (debouncedSearchTerm) params.search = debouncedSearchTerm;
     if (selectedGenre) params.genre = selectedGenre;
@@ -42,7 +41,7 @@ export function TrackListPage() {
 
   // Reset the page to 1 when the search term, selected genre, or sort field changes
   useEffect(() => {
-    if (page !== initialPage && page > 1) {
+    if (page && page > 1) {
       setPage(1);
     }
   }, [debouncedSearchTerm, selectedGenre, sortField]);
