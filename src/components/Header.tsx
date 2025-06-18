@@ -3,7 +3,9 @@ import { ModalState, ModalStateSchema } from '@/types';
 import { Button } from '@/components/ui/button';
 import { LazyModal } from '@/components/modals/LazyModal';
 
-const ModalTrackCreate = lazy(() => import('@/components/modals/ModalTrackCreate'));
+const ModalTrackCreate = lazy(
+  () => import('@/components/modals/ModalTrackCreate')
+);
 
 export function Header() {
   const [openModalCreate, setOpenModalCreate] = useState<ModalState>(
@@ -11,8 +13,13 @@ export function Header() {
   );
   return (
     <div className="flex items-center justify-between mb-4">
-      <h1 className="text-3xl font-bold" data-testid="tracks-header">Music tracks</h1>
-      <Button onClick={() => setOpenModalCreate(ModalStateSchema.Enum.open)} data-testid="create-track-button">
+      <h1 className="text-3xl font-bold" data-testid="tracks-header">
+        Music tracks
+      </h1>
+      <Button
+        onClick={() => setOpenModalCreate(ModalStateSchema.Enum.open)}
+        data-testid="create-track-button"
+      >
         Create track
       </Button>
       {openModalCreate !== ModalStateSchema.Enum.idle && (

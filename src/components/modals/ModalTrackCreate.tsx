@@ -48,7 +48,9 @@ export default function ModalTrackCreate({
       loading: <span data-testid="toast-loading">Creating track...</span>,
       success: () => {
         form.reset();
-        return <span data-testid="toast-success">Track created successfully</span>;
+        return (
+          <span data-testid="toast-success">Track created successfully</span>
+        );
       },
       error: <span data-testid="toast-error">Failed to create track</span>,
     });
@@ -86,7 +88,9 @@ export default function ModalTrackCreate({
     <Dialog
       open={open === ModalStateSchema.Enum.open}
       onOpenChange={(open) => {
-        setOpen(open ? ModalStateSchema.Enum.open : ModalStateSchema.Enum.closed);
+        setOpen(
+          open ? ModalStateSchema.Enum.open : ModalStateSchema.Enum.closed
+        );
         if (!open) {
           form.reset();
         }
@@ -100,7 +104,11 @@ export default function ModalTrackCreate({
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-testid="track-form">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4"
+            data-testid="track-form"
+          >
             {trackFormFields.map(({ name, label, placeholder, testId }) => (
               <FormField
                 key={name}
@@ -139,7 +147,13 @@ export default function ModalTrackCreate({
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isPending} data-testid="submit-button" aria-disabled={isPending} data-loading={isPending} >
+              <Button
+                type="submit"
+                disabled={isPending}
+                data-testid="submit-button"
+                aria-disabled={isPending}
+                data-loading={isPending}
+              >
                 {isPending ? 'Creating...' : 'Create Track'}
               </Button>
             </div>

@@ -37,7 +37,9 @@ export default function ModalTrackDelete({
       },
       {
         loading: <span data-testid="toast-loading">Deleting track...</span>,
-        success: <span data-testid="toast-success">Track deleted successfully</span>,
+        success: (
+          <span data-testid="toast-success">Track deleted successfully</span>
+        ),
         error: <span data-testid="toast-error">Failed to delete track</span>,
       }
     );
@@ -48,7 +50,9 @@ export default function ModalTrackDelete({
     <Dialog
       open={open === ModalStateSchema.Enum.open}
       onOpenChange={(open) => {
-        setOpen(open ? ModalStateSchema.Enum.open : ModalStateSchema.Enum.closed);
+        setOpen(
+          open ? ModalStateSchema.Enum.open : ModalStateSchema.Enum.closed
+        );
       }}
       data-testid="confirm-dialog"
     >

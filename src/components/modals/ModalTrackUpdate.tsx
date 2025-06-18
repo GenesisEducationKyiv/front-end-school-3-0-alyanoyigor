@@ -60,7 +60,9 @@ export default function ModalTrackUpdate({
       loading: <span data-testid="toast-loading">Saving...</span>,
       success: () => {
         form.reset();
-        return <span data-testid="toast-success">Track updated successfully</span>;
+        return (
+          <span data-testid="toast-success">Track updated successfully</span>
+        );
       },
       error: <span data-testid="toast-error">Failed to update track</span>,
     });
@@ -84,7 +86,9 @@ export default function ModalTrackUpdate({
     <Dialog
       open={open === ModalStateSchema.Enum.open}
       onOpenChange={(open) => {
-        setOpen(open ? ModalStateSchema.Enum.open : ModalStateSchema.Enum.closed);
+        setOpen(
+          open ? ModalStateSchema.Enum.open : ModalStateSchema.Enum.closed
+        );
         if (!open) {
           form.reset();
         }

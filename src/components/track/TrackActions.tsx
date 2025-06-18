@@ -1,13 +1,19 @@
-import { lazy, useState } from "react";
-import { Pencil, Upload, Trash } from "lucide-react";
+import { lazy, useState } from 'react';
+import { Pencil, Upload, Trash } from 'lucide-react';
 
-import { ModalState, ModalStateSchema, Track } from "@/types";
-import { Button } from "../ui/button";
-import { LazyModal } from "../modals/LazyModal";
+import { ModalState, ModalStateSchema, Track } from '@/types';
+import { Button } from '../ui/button';
+import { LazyModal } from '../modals/LazyModal';
 
-const ModalTrackUpload = lazy(() => import('@/components/modals/ModalTrackUpload'));
-const ModalTrackUpdate = lazy(() => import('@/components/modals/ModalTrackUpdate'));
-const ModalTrackDelete = lazy(() => import('@/components/modals/ModalTrackDelete'));
+const ModalTrackUpload = lazy(
+  () => import('@/components/modals/ModalTrackUpload')
+);
+const ModalTrackUpdate = lazy(
+  () => import('@/components/modals/ModalTrackUpdate')
+);
+const ModalTrackDelete = lazy(
+  () => import('@/components/modals/ModalTrackDelete')
+);
 
 interface TrackActionsProps {
   track: Track;
@@ -23,7 +29,7 @@ export function TrackActions({ track, genres }: TrackActionsProps) {
   );
   const [openModalUpdate, setOpenModalUpdate] = useState<ModalState>(
     ModalStateSchema.Enum.idle
-  );    
+  );
 
   return (
     <div className="flex gap-2">

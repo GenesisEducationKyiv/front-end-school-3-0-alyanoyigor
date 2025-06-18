@@ -19,7 +19,10 @@ export function TrackItem({ track, genres }: TrackItemProps) {
   );
 
   return (
-    <Card className="group hover:bg-accent/50 transition-colors relative overflow-hidden" data-testid={`track-item-${track.id}`}>
+    <Card
+      className="group hover:bg-accent/50 transition-colors relative overflow-hidden"
+      data-testid={`track-item-${track.id}`}
+    >
       <CardContent className="py-2">
         <div className="flex items-center gap-4">
           <TrackImage
@@ -32,7 +35,11 @@ export function TrackItem({ track, genres }: TrackItemProps) {
         </div>
 
         {track.audioFile && (
-          <TrackAudioPlayer id={track.id} audioFile={track.audioFile} {...audioPlayerProps} />
+          <TrackAudioPlayer
+            id={track.id}
+            audioFile={track.audioFile}
+            {...audioPlayerProps}
+          />
         )}
       </CardContent>
     </Card>

@@ -83,7 +83,9 @@ export default function ModalTrackUpload({
           handleResetFile();
           queryClient.invalidateQueries({ queryKey: ['tracks'] });
 
-          return <span data-testid="toast-success">File uploaded successfully</span>;
+          return (
+            <span data-testid="toast-success">File uploaded successfully</span>
+          );
         },
         error: <span data-testid="toast-error">Failed to upload file</span>,
       }
@@ -96,7 +98,9 @@ export default function ModalTrackUpload({
       success: () => {
         queryClient.invalidateQueries({ queryKey: ['tracks'] });
 
-        return <span data-testid="toast-success">File deleted successfully</span>;
+        return (
+          <span data-testid="toast-success">File deleted successfully</span>
+        );
       },
       error: <span data-testid="toast-error">Failed to delete file</span>,
     });
@@ -128,7 +132,9 @@ export default function ModalTrackUpload({
     <Dialog
       open={open === ModalStateSchema.Enum.open}
       onOpenChange={(open) => {
-        setOpen(open ? ModalStateSchema.Enum.open : ModalStateSchema.Enum.closed);
+        setOpen(
+          open ? ModalStateSchema.Enum.open : ModalStateSchema.Enum.closed
+        );
         if (!open) {
           handleResetFile();
         }
@@ -150,7 +156,11 @@ export default function ModalTrackUpload({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-testid="track-form">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-4"
+          data-testid="track-form"
+        >
           <div className="space-y-2">
             <div className="flex items-center justify-center w-full">
               <label
