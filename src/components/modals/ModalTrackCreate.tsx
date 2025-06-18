@@ -1,9 +1,10 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useCallback } from 'react';
 import { toast } from 'sonner';
 
 import { useGenres, useCreateTrack } from '@/services/hooks';
-import { CreateTrackDto, ModalState, ModalStateEnum } from '@/types';
+import { CreateTrackDto, ModalState, ModalStateSchema } from '@/types';
 import {
   Dialog,
   DialogContent,
@@ -18,7 +19,6 @@ import { trackFormFields } from '@/consts';
 
 import { InputField } from '../InputField';
 import { GenreSelect } from '../filters/GenreSelect';
-import { useCallback } from 'react';
 
 interface ModalTrackCreateProps {
   open: ModalState;
@@ -48,12 +48,14 @@ export default function ModalTrackCreate({
       loading: <span data-testid="toast-loading">Creating track...</span>,
       success: () => {
         form.reset();
-        return <span data-testid="toast-success">Track created successfully</span>;
+        return (
+          <span data-testid="toast-success">Track created successfully</span>
+        );
       },
       error: <span data-testid="toast-error">Failed to create track</span>,
     });
 
-    setOpen(ModalStateEnum.Closed);
+    setOpen(ModalStateSchema.Enum.closed);
   };
 
   const handleAddGenre = useCallback(
@@ -77,11 +79,18 @@ export default function ModalTrackCreate({
     [form]
   );
 
+  const handleClickCancel = useCallback(() => {
+    setOpen(ModalStateSchema.Enum.closed);
+    form.reset();
+  }, [form]);
+
   return (
     <Dialog
-      open={open === ModalStateEnum.Open}
+      open={open === ModalStateSchema.Enum.open}
       onOpenChange={(open) => {
-        setOpen(open ? ModalStateEnum.Open : ModalStateEnum.Closed);
+        setOpen(
+          open ? ModalStateSchema.Enum.open : ModalStateSchema.Enum.closed
+        );
         if (!open) {
           form.reset();
         }
@@ -95,7 +104,11 @@ export default function ModalTrackCreate({
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-testid="track-form">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4"
+            data-testid="track-form"
+          >
             {trackFormFields.map(({ name, label, placeholder, testId }) => (
               <FormField
                 key={name}
@@ -128,16 +141,19 @@ export default function ModalTrackCreate({
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => {
-                  setOpen(ModalStateEnum.Closed);
-                  form.reset();
-                }}
+                onClick={handleClickCancel}
                 disabled={isPending}
                 aria-disabled={isPending}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isPending} data-testid="submit-button" aria-disabled={isPending} data-loading={isPending} >
+              <Button
+                type="submit"
+                disabled={isPending}
+                data-testid="submit-button"
+                aria-disabled={isPending}
+                data-loading={isPending}
+              >
                 {isPending ? 'Creating...' : 'Create Track'}
               </Button>
             </div>

@@ -2,7 +2,7 @@ import { toast } from 'sonner';
 import { Trash2 } from 'lucide-react';
 
 import { useDeleteTrack, useDeleteTrackFile } from '@/services/hooks';
-import { ModalState, ModalStateEnum, Track } from '@/types';
+import { ModalState, ModalStateSchema, Track } from '@/types';
 import {
   Dialog,
   DialogContent,
@@ -37,18 +37,22 @@ export default function ModalTrackDelete({
       },
       {
         loading: <span data-testid="toast-loading">Deleting track...</span>,
-        success: <span data-testid="toast-success">Track deleted successfully</span>,
+        success: (
+          <span data-testid="toast-success">Track deleted successfully</span>
+        ),
         error: <span data-testid="toast-error">Failed to delete track</span>,
       }
     );
-    setOpen(ModalStateEnum.Closed);
+    setOpen(ModalStateSchema.Enum.closed);
   };
 
   return (
     <Dialog
-      open={open === ModalStateEnum.Open}
+      open={open === ModalStateSchema.Enum.open}
       onOpenChange={(open) => {
-        setOpen(open ? ModalStateEnum.Open : ModalStateEnum.Closed);
+        setOpen(
+          open ? ModalStateSchema.Enum.open : ModalStateSchema.Enum.closed
+        );
       }}
       data-testid="confirm-dialog"
     >
@@ -67,7 +71,7 @@ export default function ModalTrackDelete({
           <Button
             type="button"
             variant="outline"
-            onClick={() => setOpen(ModalStateEnum.Closed)}
+            onClick={() => setOpen(ModalStateSchema.Enum.closed)}
             disabled={isPending || isDeletingFile}
             aria-disabled={isPending || isDeletingFile}
             data-testid="cancel-delete"
