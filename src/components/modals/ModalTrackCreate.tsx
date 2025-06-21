@@ -96,7 +96,10 @@ export default function ModalTrackCreate({
         }
       }}
     >
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent
+        className="sm:max-w-[425px]"
+        data-testid="create-track-modal"
+      >
         <DialogHeader>
           <DialogTitle>Create New Track</DialogTitle>
           <DialogDescription>
