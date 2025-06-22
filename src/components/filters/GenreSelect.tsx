@@ -52,6 +52,7 @@ export function GenreSelect({
                 size="sm"
                 onClick={() => handleAddGenre(genre)}
                 className="flex items-center gap-1"
+                data-testid="genre-button"
               >
                 <Plus className="h-3 w-3" />
                 {genre}

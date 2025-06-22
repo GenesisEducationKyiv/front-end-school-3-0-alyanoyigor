@@ -24,6 +24,7 @@ export const SortTrack = memo(({ sortField, setSortField }: SortTrackProps) => {
       variant="outline"
       onClick={() => setSortField(null)}
       className="flex justify-between min-w-32 text-muted-foreground"
+      data-testid="sort-button"
     >
       {sortFieldOptions[sortField]}
       <XIcon className="h-4 w-4" />
@@ -34,14 +35,13 @@ export const SortTrack = memo(({ sortField, setSortField }: SortTrackProps) => {
       onValueChange={(value: SortField) => {
         setSortField(value);
       }}
-      data-testid="sort-select"
     >
-      <SelectTrigger className="min-w-32">
+      <SelectTrigger className="min-w-32" data-testid="sort-select">
         <SelectValue placeholder="Sort by" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent data-testid="sort-select-content">
         {Object.entries(sortFieldOptions).map(([key, value]) => (
-          <SelectItem key={key} value={key}>
+          <SelectItem key={key} value={key} data-testid="sort-select-item">
             {value}
           </SelectItem>
         ))}
