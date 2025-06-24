@@ -15,10 +15,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { Form, FormField } from '@/components/ui/form';
 import { trackFormFields } from '@/consts';
-import { InputField } from '../InputField';
 import { UpdateTrackSchema } from '@/validation';
-import { GenreSelect } from '../filters/GenreSelect';
 import { getDirtyValues } from '@/lib/getDirtyValues';
+
+import { InputField } from '../InputField';
+import { GenreSelect } from '../filters/GenreSelect';
 
 interface ModalTrackUpdateProps {
   track: Track;
@@ -73,13 +74,17 @@ export default function ModalTrackUpdate({
   const handleAddGenre = (genre: string) => {
     const currentGenres = form.getValues('genres');
     if (currentGenres && !currentGenres.includes(genre)) {
-      form.setValue('genres', [...currentGenres, genre]);
+      form.setValue('genres', [...currentGenres, genre], {
+        shouldDirty: true,
+      });
     }
   };
 
   const handleRemoveGenre = (genre: string) => {
     const currentGenres = form.getValues('genres');
-    form.setValue('genres', currentGenres?.filter((g) => g !== genre) ?? []);
+    form.setValue('genres', currentGenres?.filter((g) => g !== genre) ?? [], {
+      shouldDirty: true,
+    });
   };
 
   return (
