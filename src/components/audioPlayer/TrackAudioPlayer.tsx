@@ -1,30 +1,19 @@
-interface TrackAudioPlayerProps {
-  id: string;
-  audioFile: string;
-  progressRef: React.RefObject<HTMLDivElement | null>;
-  audioRef: React.RefObject<HTMLAudioElement | null>;
-  handleSeek: (e: React.MouseEvent<HTMLDivElement>) => void;
-  handleTimeUpdate: () => void;
-  handleLoadedMetadata: () => void;
-  formatTime: (time: number) => string;
-  currentTime: number;
-  duration: number;
-  isDirty: boolean;
-}
+import { formatTime } from '@/lib/utils';
+import { useTrackContext } from '../track/TrackItemContext';
 
-export function TrackAudioPlayer({
-  id,
-  audioFile,
-  progressRef,
-  audioRef,
-  handleSeek,
-  handleTimeUpdate,
-  handleLoadedMetadata,
-  formatTime,
-  currentTime,
-  duration,
-  isDirty,
-}: TrackAudioPlayerProps) {
+export function TrackAudioPlayer() {
+  const { audioPlayerData, track } = useTrackContext();
+  const {
+    audioRef,
+    currentTime,
+    duration,
+    progressRef,
+    handleSeek,
+    handleTimeUpdate,
+    handleLoadedMetadata,
+  } = audioPlayerData;
+  const { id, audioFile } = track;
+
   return (
     <div
       className="absolute bottom-2 left-6 right-6"
@@ -39,35 +28,31 @@ export function TrackAudioPlayer({
           className="hidden"
         />
 
-        {isDirty && currentTime > 0 && (
-          <>
-            <div className="flex justify-end gap-1 text-xs text-muted-foreground">
-              <span>{formatTime(currentTime)}</span>
-              <span>/</span>
-              <span>{formatTime(duration)}</span>
-            </div>
+        <div className="flex justify-end gap-1 text-xs text-muted-foreground">
+          <span>{formatTime(currentTime)}</span>
+          <span>/</span>
+          <span>{formatTime(duration)}</span>
+        </div>
+        <div
+          className="flex items-center gap-2 bg-background/80 backdrop-blur-sm"
+          data-testid={`audio-progress-${id}`}
+        >
+          <div className="flex-1">
             <div
-              className="flex items-center gap-2 bg-background/80 backdrop-blur-sm"
-              data-testid={`audio-progress-${id}`}
+              ref={progressRef}
+              className="relative py-2 cursor-pointer progress"
+              onClick={handleSeek}
             >
-              <div className="flex-1">
-                <div
-                  ref={progressRef}
-                  className="relative py-2 cursor-pointer progress"
-                  onClick={handleSeek}
-                >
-                  <div
-                    className="absolute top-1/2 -translate-y-1/2 h-1 bg-primary rounded-full"
-                    style={{
-                      width: `${(currentTime / duration) * 100}%`,
-                    }}
-                  />
-                  <div className="absolute top-1/2 -translate-y-1/2 h-1 bg-primary/20 rounded-full progress-hover:bg-primary/30 transition-colors w-full" />
-                </div>
-              </div>
+              <div
+                className="absolute top-1/2 -translate-y-1/2 h-1 bg-primary rounded-full"
+                style={{
+                  width: `${(currentTime / duration) * 100}%`,
+                }}
+              />
+              <div className="absolute top-1/2 -translate-y-1/2 h-1 bg-primary/20 rounded-full progress-hover:bg-primary/30 transition-colors w-full" />
             </div>
-          </>
-        )}
+          </div>
+        </div>
       </div>
     </div>
   );

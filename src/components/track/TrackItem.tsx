@@ -1,11 +1,10 @@
-import { Card, CardContent } from '@/components/ui/card';
 import { Track } from '@/types';
-import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 
 import { TrackText } from './TrackInfo';
 import { TrackImage } from './TrackInfo';
 import { TrackActions } from './TrackActions';
 import { TrackAudioPlayer } from '../audioPlayer/TrackAudioPlayer';
+import { TrackItemContext } from './TrackItemContext';
 
 interface TrackItemProps {
   track: Track;
@@ -13,35 +12,15 @@ interface TrackItemProps {
 }
 
 export function TrackItem({ track, genres }: TrackItemProps) {
-  const { isPlaying, handlePlayPause, ...audioPlayerProps } = useAudioPlayer(
-    track.id,
-    track.audioFile
-  );
-
   return (
-    <Card
-      className="group hover:bg-accent/50 transition-colors relative overflow-hidden"
-      data-testid={`track-item-${track.id}`}
-    >
-      <CardContent className="py-2">
-        <div className="flex items-center gap-4">
-          <TrackImage
-            track={track}
-            handlePlayPause={handlePlayPause}
-            isPlaying={isPlaying}
-          />
-          <TrackText track={track} />
-          <TrackActions track={track} genres={genres} />
-        </div>
+    <TrackItemContext track={track}>
+      <div className="flex items-center gap-4">
+        <TrackImage />
+        <TrackText />
+        <TrackActions genres={genres} />
+      </div>
 
-        {track.audioFile && (
-          <TrackAudioPlayer
-            id={track.id}
-            audioFile={track.audioFile}
-            {...audioPlayerProps}
-          />
-        )}
-      </CardContent>
-    </Card>
+      {track.audioFile && <TrackAudioPlayer />}
+    </TrackItemContext>
   );
 }

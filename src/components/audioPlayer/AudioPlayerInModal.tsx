@@ -1,6 +1,7 @@
 import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
+import { formatTime } from '@/lib/utils';
 
 interface AudioPlayerInModalProps {
   src: string;
@@ -20,7 +21,6 @@ export function AudioPlayerInModal({ src, trackId }: AudioPlayerInModalProps) {
     handleSeek,
     handleTimeUpdate,
     handleLoadedMetadata,
-    formatTime,
   } = useAudioPlayer(trackId + 'modal', src);
 
   return (
@@ -86,4 +86,4 @@ export function AudioPlayerInModal({ src, trackId }: AudioPlayerInModalProps) {
       </div>
     </div>
   );
-} 
+}

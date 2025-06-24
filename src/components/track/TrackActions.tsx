@@ -1,9 +1,10 @@
 import { lazy, useState } from 'react';
 import { Pencil, Upload, Trash } from 'lucide-react';
 
-import { ModalState, ModalStateSchema, Track } from '@/types';
+import { ModalState, ModalStateSchema } from '@/types';
 import { Button } from '../ui/button';
 import { LazyModal } from '../modals/LazyModal';
+import { useTrackContext } from './TrackItemContext';
 
 const ModalTrackUpload = lazy(
   () => import('@/components/modals/ModalTrackUpload')
@@ -16,11 +17,12 @@ const ModalTrackDelete = lazy(
 );
 
 interface TrackActionsProps {
-  track: Track;
   genres: string[] | undefined;
 }
 
-export function TrackActions({ track, genres }: TrackActionsProps) {
+export function TrackActions({ genres }: TrackActionsProps) {
+  const { track } = useTrackContext();
+
   const [openModalDelete, setOpenModalDelete] = useState<ModalState>(
     ModalStateSchema.Enum.idle
   );
