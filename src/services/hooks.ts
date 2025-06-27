@@ -12,19 +12,19 @@ import {
   UpdateTrackDto,
 } from '@/types';
 import {
+  getTracks,
   createTrack,
+  updateTrack,
   deleteTrack,
   deleteTrackFile,
-  getGenres,
-  getTracks,
-  updateTrack,
   uploadTrackFile,
-} from './index';
+  getGenres,
+} from './graphql';
 
 export const useTracks = (params?: Partial<QueryParams>) => {
   return useQuery<TracksResponse>({
     queryKey: ['tracks', params],
-    queryFn: () => getTracks({ ...params }),
+    queryFn: () => getTracks(params),
     placeholderData: keepPreviousData,
   });
 };
@@ -70,14 +70,8 @@ export const useGenres = () => {
 
 export const useUploadTrackFile = () => {
   return useMutation({
-    mutationFn: async ({
-      trackId,
-      formData,
-    }: {
-      trackId: string;
-      formData: FormData;
-    }) => {
-      return uploadTrackFile(trackId, formData);
+    mutationFn: async ({ trackId, file }: { trackId: string; file: File }) => {
+      return uploadTrackFile(trackId, file);
     },
   });
 };

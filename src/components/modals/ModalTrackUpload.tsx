@@ -69,13 +69,10 @@ export default function ModalTrackUpload({
   const onSubmit = (data: FormData) => {
     setOpen(ModalStateSchema.Enum.closed);
 
-    const formData = new FormData();
-    formData.append('file', data.file);
-
     toast.promise(
       uploadFile({
         trackId: track.id,
-        formData,
+        file: data.file,
       }),
       {
         loading: <span data-testid="toast-loading">Uploading...</span>,

@@ -30,7 +30,10 @@ export const deleteTrack = async (id: string) => {
 
 export const getGenres = (): Promise<string[]> => api.get('/genres');
 
-export const uploadTrackFile = (trackId: string, formData: FormData) => {
+export const uploadTrackFile = (trackId: string, file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+
   return api.post(`/tracks/${trackId}/upload`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
