@@ -1,16 +1,20 @@
+import { lazy, Suspense } from 'react';
 import { formatTime } from '@/lib/utils';
 import { useTrackContext } from '../track/TrackItemContext';
+import { useAudioPlayerStore } from '@/stores/audioPlayerStore';
+
+const TrackProgress = lazy(() => import('./TrackProgress'));
 
 export function TrackAudioPlayer() {
+  const activeTrackId = useAudioPlayerStore((state) => state.activeTrackId);
   const { audioPlayerData, track } = useTrackContext();
   const {
     audioRef,
     currentTime,
     duration,
-    progressRef,
-    handleSeek,
     handleTimeUpdate,
     handleLoadedMetadata,
+    isDirty,
   } = audioPlayerData;
   const { id, audioFile } = track;
 
@@ -33,26 +37,12 @@ export function TrackAudioPlayer() {
           <span>/</span>
           <span>{formatTime(duration)}</span>
         </div>
-        <div
-          className="flex items-center gap-2 bg-background/80 backdrop-blur-sm"
-          data-testid={`audio-progress-${id}`}
-        >
-          <div className="flex-1">
-            <div
-              ref={progressRef}
-              className="relative py-2 cursor-pointer progress"
-              onClick={handleSeek}
-            >
-              <div
-                className="absolute top-1/2 -translate-y-1/2 h-1 bg-primary rounded-full"
-                style={{
-                  width: `${(currentTime / duration) * 100}%`,
-                }}
-              />
-              <div className="absolute top-1/2 -translate-y-1/2 h-1 bg-primary/20 rounded-full progress-hover:bg-primary/30 transition-colors w-full" />
-            </div>
-          </div>
-        </div>
+
+        {isDirty && activeTrackId === id && (
+          <Suspense fallback={null}>
+            <TrackProgress />
+          </Suspense>
+        )}
       </div>
     </div>
   );
