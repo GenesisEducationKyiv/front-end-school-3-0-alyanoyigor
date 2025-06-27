@@ -8,6 +8,7 @@ interface UseAudioPlayerReturn {
   duration: number;
   progressRef: React.RefObject<HTMLDivElement | null> | null;
   audioRef: React.RefObject<HTMLAudioElement | null> | null;
+  isDirty: boolean;
   handleSeek: (e: React.MouseEvent<HTMLDivElement>) => void;
   handleTimeUpdate: () => void;
   handleLoadedMetadata: () => void;
@@ -32,6 +33,7 @@ export function useAudioPlayer(
   const [duration, setDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
     if (isPlaying) {
@@ -67,9 +69,12 @@ export function useAudioPlayer(
 
   const handlePlayPause = () => {
     const audio = audioRef.current;
-    setActiveTrackId(id);
-
     if (!audio) return;
+
+    if (!isDirty) {
+      setIsDirty(true);
+    }
+    setActiveTrackId(id);
 
     if (isPlaying) {
       setIsPlaying(false);
@@ -122,6 +127,7 @@ export function useAudioPlayer(
     duration,
     progressRef,
     audioRef,
+    isDirty,
     handleSeek,
     handleTimeUpdate,
     handleLoadedMetadata,

@@ -14,7 +14,7 @@ function PlayButton() {
     <button
       onClick={audioPlayerData.handlePlayPause}
       className={cn(
-        'absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity rounded-md flex items-center justify-center',
+        'absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-md flex items-center justify-center',
         isActiveTrack && 'opacity-100'
       )}
       data-testid={`${audioPlayerData.isPlaying ? 'pause' : 'play'}-button-${track.id}`}
