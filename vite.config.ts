@@ -4,7 +4,8 @@ import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 import { visualizer } from 'rollup-plugin-visualizer';
 
-// https://vite.dev/config/
+const isAnalyze = process.env.VITE_ANALYZE === 'true';
+
 export default defineConfig({
   plugins: [tailwindcss(), react()],
   resolve: {
@@ -15,7 +16,15 @@ export default defineConfig({
   build: {
     sourcemap: true,
     rollupOptions: {
-      plugins: [visualizer({ gzipSize: true, template: 'treemap' })],
+      plugins: [
+        isAnalyze &&
+          visualizer({
+            gzipSize: true,
+            template: 'treemap',
+            open: true,
+            filename: 'dist/stats.html',
+          }),
+      ],
       output: {
         manualChunks: {
           vendor: [

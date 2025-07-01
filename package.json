@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "prepare": "husky install",
-    "ts-check": "tsc -p tsconfig.app.json --noEmit"
+    "ts-check": "tsc -p tsconfig.app.json --noEmit",
+    "analyze": "VITE_ANALYZE=true npm run build"
   },
   "dependencies": {
     "@hookform/resolvers": "5.1.1",
