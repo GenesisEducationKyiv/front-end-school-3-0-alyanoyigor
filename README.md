@@ -36,3 +36,14 @@
 ## Architecture Decision Log (ADL)
 
 You can find all key architectural decisions in [Architecture Decision Log (ADL)](docs/ads/log.md). See the `docs/ads/records` directory for the full list and details.
+
+## Analyze the bundle
+
+```bash
+npm run analyze
+```
+
+Then will be opened the `dist/stats.html` file in your browser.
+
+Example:
+![Screenshot from 2025-07-01 18-24-21](https://github.com/user-attachments/assets/8442aad5-f209-4e3e-8125-8480510215e6)
