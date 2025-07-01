@@ -45,4 +45,5 @@ npm run analyze
 
 Then will be opened the `dist/stats.html` file in your browser.
 
-Example: [stats.html](./dist/stats.html)
+Example:
+![Screenshot from 2025-07-01 18-24-21](https://github.com/user-attachments/assets/8442aad5-f209-4e3e-8125-8480510215e6)
