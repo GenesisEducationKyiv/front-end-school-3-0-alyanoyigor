@@ -1,4 +1,4 @@
-name: CI
+name: Frontend CI
 
 on:
   push:
@@ -8,48 +8,12 @@ on:
 
 jobs:
   lint:
-    uses: ./.github/workflows/common.yml
-    steps:
-      - name: Run ESLint
-        run: npm run lint | tee dist/lint-report.log
+    uses: ./.github/workflows/lint.yml
 
-      - name: Upload lint results
-        uses: actions/upload-artifact@v4
-        with:
-          name: lint-results
-          path: dist/lint-report.log
-
-      - name: TypeScript type check
-        run: npm run ts-check | tee dist/ts-check-report.log
-
-      - name: Upload type check results
-        uses: actions/upload-artifact@v4
-        with:
-          name: type-check-results
-          path: dist/ts-check-report.log
-
-  tests:
-    uses: ./.github/workflows/common.yml
-    needs: [lint]
-    steps:
-      - name: Run tests
-        run: npm run test:ci
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: dist/tests-report.xml
+  test:
+    needs: lint
+    uses: ./.github/workflows/test.yml
 
   build:
-    uses: ./.github/workflows/common.yml
-    needs: [tests, lint]
-    steps:
-      - name: Run build
-        run: npm run build
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-build
-          path: dist/
+    needs: [lint, test]
+    uses: ./.github/workflows/build.yml
