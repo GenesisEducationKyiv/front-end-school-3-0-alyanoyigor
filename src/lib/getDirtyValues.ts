@@ -1,5 +1,5 @@
 export function getDirtyValues<T>(
-  dirtyFields: Partial<Record<keyof T, unknown>>,
+  dirtyFields: Partial<Record<keyof T, boolean | boolean[]>>,
   values: T
 ): Partial<T> {
   const dirtyFieldKeys = Object.keys(dirtyFields) as (keyof T)[];

@@ -41,7 +41,7 @@ export function TrackActions({ track, genres }: TrackActionsProps) {
         onClick={() => setOpenModalUpdate(ModalStateSchema.Enum.open)}
         disabled={track.id.includes('optimistic')}
         aria-disabled={track.id.includes('optimistic')}
-        data-testid={`edit-track-${track.id}`}
+        data-testid="edit-track"
       >
         <Pencil className="w-4 h-4" />
       </Button>
@@ -67,7 +67,7 @@ export function TrackActions({ track, genres }: TrackActionsProps) {
         onClick={() => setOpenModalDelete(ModalStateSchema.Enum.open)}
         disabled={track.id.includes('optimistic')}
         aria-disabled={track.id.includes('optimistic')}
-        data-testid={`delete-track-${track.id}`}
+        data-testid="delete-track"
       >
         <Trash className="w-4 h-4" />
       </Button>

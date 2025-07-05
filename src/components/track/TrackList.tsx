@@ -49,7 +49,10 @@ export function TrackList({
 
   if (error) {
     return (
-      <div className="mt-8 text-center text-destructive">
+      <div
+        className="mt-8 text-center text-destructive"
+        data-testid="error-loading-tracks"
+      >
         Error loading tracks
       </div>
     );
