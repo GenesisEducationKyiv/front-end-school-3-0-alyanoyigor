@@ -75,7 +75,6 @@ describe('TrackList', () => {
   afterAll(() => server.close());
 
   it('should show loading skeleton when fetching tracks', () => {
-    // Arrange
     server.use(
       http.get('*/tracks', async () => {
         await delay('infinite');
@@ -83,39 +82,32 @@ describe('TrackList', () => {
       })
     );
 
-    // Act
     render(<TrackList {...defaultProps} />, { wrapper: createWrapper() });
 
-    // Assert
     expect(screen.getByTestId('loading-tracks')).toBeInTheDocument();
   });
 
   it('should show error message on API error', async () => {
-    // Arrange
     server.use(
       http.get('*/tracks', () => {
         return new HttpResponse(null, { status: 500 });
       })
     );
 
-    // Act
     render(<TrackList {...defaultProps} />, { wrapper: createWrapper() });
 
-    // Assert
-    expect(await screen.findByText('Error loading tracks')).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('error-loading-tracks')
+    ).toBeInTheDocument();
   });
 
   it('should render tracks on successful fetch', async () => {
-    // Arrange
-    // Act
     render(<TrackList {...defaultProps} />, { wrapper: createWrapper() });
 
-    // Assert
-    expect(await screen.findByText('Test Track')).toBeInTheDocument();
+    expect(await screen.findByTestId('track-item-1')).toBeInTheDocument();
   });
 
   it('should render pagination if totalPages > 1', async () => {
-    // Arrange
     server.use(
       http.get('*/tracks', () => {
         return HttpResponse.json({
@@ -125,26 +117,20 @@ describe('TrackList', () => {
       })
     );
 
-    // Act
     render(<TrackList {...defaultProps} />, { wrapper: createWrapper() });
 
-    // Assert
     expect(await screen.findByTestId('pagination')).toBeInTheDocument();
   });
 
   it('should not render pagination if totalPages <= 1', async () => {
-    // Arrange
-    // Act
     render(<TrackList {...defaultProps} />, { wrapper: createWrapper() });
 
-    // Assert
     await waitFor(() => {
       expect(screen.queryByTestId('pagination')).not.toBeInTheDocument();
     });
   });
 
   it('should not include parameters when they are None', async () => {
-    // Arrange
     let requestUrl = '';
     server.use(
       http.get('*/tracks', ({ request }) => {
@@ -156,13 +142,11 @@ describe('TrackList', () => {
       })
     );
 
-    // Act
     render(<TrackList {...defaultProps} sortField={O.None} />, {
       wrapper: createWrapper(),
     });
 
-    // Assert
-    await screen.findByText('Test Track');
+    await screen.findByTestId('track-item-1');
     const url = new URL(requestUrl);
 
     expect(url.searchParams.has('page')).toBe(false);
