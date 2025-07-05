@@ -82,7 +82,7 @@ export default function ModalTrackCreate({
   const handleClickCancel = useCallback(() => {
     setOpen(ModalStateSchema.Enum.closed);
     form.reset();
-  }, [form]);
+  }, [form, setOpen]);
 
   return (
     <Dialog

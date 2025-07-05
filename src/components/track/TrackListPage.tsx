@@ -37,13 +37,14 @@ export function TrackListPage() {
     if (selectedGenre) params.genre = selectedGenre;
 
     setSearchParams(params);
-  }, [page, sortField, debouncedSearchTerm, selectedGenre]);
+  }, [page, sortField, debouncedSearchTerm, selectedGenre, setSearchParams]);
 
   // Reset the page to 1 when the search term, selected genre, or sort field changes
   useEffect(() => {
     if (page && page > 1) {
       setPage(1);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearchTerm, selectedGenre, sortField]);
 
   return (
