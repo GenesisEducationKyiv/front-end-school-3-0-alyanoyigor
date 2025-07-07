@@ -10,7 +10,11 @@
     "prepare": "husky install",
     "ts-check": "tsc -p tsconfig.app.json --noEmit",
     "test": "vitest",
-    "test:e2e": "playwright test"
+    "test:ci": "vitest run --reporter=default --reporter=junit --outputFile=dist/tests-report.xml",
+    "test:e2e": "playwright test",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@hookform/resolvers": "5.1.1",

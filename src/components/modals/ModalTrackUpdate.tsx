@@ -50,7 +50,7 @@ export default function ModalTrackUpdate({
 
   useEffect(() => {
     form.reset(track);
-  }, [track]);
+  }, [form, track]);
 
   const onSubmit = async (data: UpdateTrackDto) => {
     // Add to request only changed fields
