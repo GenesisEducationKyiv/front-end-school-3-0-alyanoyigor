@@ -98,10 +98,6 @@ export interface TracksResponse {
   };
 }
 
-export const ModalStateSchema = z.enum(['idle', 'open', 'closed']);
-
-export type ModalState = z.infer<typeof ModalStateSchema>;
-
 export type TrackFormField = {
   name: keyof CreateTrackDto;
   label: string;

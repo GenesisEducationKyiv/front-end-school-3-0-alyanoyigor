@@ -2,30 +2,33 @@ import { toast } from 'sonner';
 import { Trash2 } from 'lucide-react';
 
 import { useDeleteTrack, useDeleteTrackFile } from '@/services/hooks';
-import { ModalState, ModalStateSchema, Track } from '@/types';
+import { Track } from '@/types';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 
 interface ModalTrackDeleteProps {
   track: Track;
-  open: ModalState;
-  setOpen: (open: ModalState) => void;
+  children: React.ReactNode;
 }
 
-export default function ModalTrackDelete({
-  track,
-  open,
-  setOpen,
-}: ModalTrackDeleteProps) {
+function DeleteTrackModal({ track, children }: ModalTrackDeleteProps) {
+  const [open, setOpen] = useState(false);
+
   const { mutateAsync: deleteTrack, isPending } = useDeleteTrack();
   const { mutateAsync: deleteTrackFile, isPending: isDeletingFile } =
     useDeleteTrackFile();
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const handleDelete = async () => {
     toast.promise(
@@ -43,20 +46,14 @@ export default function ModalTrackDelete({
         error: <span data-testid="toast-error">Failed to delete track</span>,
       }
     );
-    setOpen(ModalStateSchema.Enum.closed);
+
+    handleClose();
   };
 
   return (
-    <Dialog
-      open={open === ModalStateSchema.Enum.open}
-      onOpenChange={(open) => {
-        setOpen(
-          open ? ModalStateSchema.Enum.open : ModalStateSchema.Enum.closed
-        );
-      }}
-      data-testid="confirm-dialog"
-    >
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={open} onOpenChange={setOpen} data-testid="confirm-dialog">
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Delete Track</DialogTitle>
           <DialogDescription>
@@ -71,7 +68,7 @@ export default function ModalTrackDelete({
           <Button
             type="button"
             variant="outline"
-            onClick={() => setOpen(ModalStateSchema.Enum.closed)}
+            onClick={handleClose}
             disabled={isPending || isDeletingFile}
             aria-disabled={isPending || isDeletingFile}
             data-testid="cancel-delete"
@@ -104,3 +101,5 @@ export default function ModalTrackDelete({
     </Dialog>
   );
 }
+
+export default DeleteTrackModal;
