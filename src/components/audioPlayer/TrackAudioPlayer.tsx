@@ -1,21 +1,15 @@
 import { lazy, Suspense } from 'react';
-import { formatTime } from '@/lib/utils';
 import { useTrackContext } from '../track/TrackItemContext';
 import { useAudioPlayerStore } from '@/stores/audioPlayerStore';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const TrackProgress = lazy(() => import('./TrackProgress'));
 
 export function TrackAudioPlayer() {
   const activeTrackId = useAudioPlayerStore((state) => state.activeTrackId);
   const { audioPlayerData, track } = useTrackContext();
-  const {
-    audioRef,
-    currentTime,
-    duration,
-    handleTimeUpdate,
-    handleLoadedMetadata,
-    isDirty,
-  } = audioPlayerData;
+  const { audioRef, handleTimeUpdate, handleLoadedMetadata, isDirty } =
+    audioPlayerData;
   const { id, audioFile } = track;
 
   return (
@@ -32,14 +26,14 @@ export function TrackAudioPlayer() {
           className="hidden"
         />
 
-        <div className="flex justify-end gap-1 text-xs text-muted-foreground">
-          <span>{formatTime(currentTime)}</span>
-          <span>/</span>
-          <span>{formatTime(duration)}</span>
-        </div>
-
         {isDirty && activeTrackId === id && (
-          <Suspense fallback={null}>
+          <Suspense
+            fallback={
+              <div className="py-2">
+                <Skeleton className="w-full h-1 rounded-full" />
+              </div>
+            }
+          >
             <TrackProgress />
           </Suspense>
         )}
