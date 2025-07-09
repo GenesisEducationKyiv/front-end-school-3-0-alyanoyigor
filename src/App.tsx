@@ -1,7 +1,7 @@
 import { Toaster } from 'sonner';
 
-import { Header } from '@/components/Header';
-import { TrackListPage } from '@/components/track/TrackListPage';
+import { Header } from '@/shared/components/Header';
+import { TrackListPage } from '@/features/tracks/components/TrackListPage';
 
 function App() {
   return (
