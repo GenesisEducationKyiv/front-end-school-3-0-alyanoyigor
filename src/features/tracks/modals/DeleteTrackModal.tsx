@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import Button from '@mui/material/Button';
 import { toast } from 'sonner';
 import { Trash2 } from 'lucide-react';
 
@@ -14,8 +16,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/shared/components/ui/dialog';
-import { Button } from '@/shared/components/ui/button';
-import { useState } from 'react';
 
 interface ModalTrackDeleteProps {
   track: Track;
@@ -70,7 +70,7 @@ function DeleteTrackModal({ track, children }: ModalTrackDeleteProps) {
         <div className="flex justify-end gap-2">
           <Button
             type="button"
-            variant="outline"
+            variant="outlined"
             onClick={handleClose}
             disabled={isPending || isDeletingFile}
             aria-disabled={isPending || isDeletingFile}
@@ -80,24 +80,16 @@ function DeleteTrackModal({ track, children }: ModalTrackDeleteProps) {
           </Button>
           <Button
             type="button"
-            variant="destructive"
+            color="error"
+            variant="contained"
+            startIcon={<Trash2 className="h-4 w-4" />}
             onClick={handleDelete}
             disabled={isPending || isDeletingFile}
             aria-disabled={isPending || isDeletingFile}
             data-testid="confirm-delete"
             data-loading={isPending}
           >
-            {isPending ? (
-              <>
-                <Trash2 className="h-4 w-4 animate-spin" />
-                Deleting...
-              </>
-            ) : (
-              <>
-                <Trash2 className="h-4 w-4" />
-                Delete Track
-              </>
-            )}
+            Delete Track
           </Button>
         </div>
       </DialogContent>

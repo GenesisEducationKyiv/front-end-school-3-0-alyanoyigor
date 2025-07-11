@@ -1,6 +1,6 @@
 import { Option } from '@mobily/ts-belt';
+import Chip from '@mui/material/Chip';
 
-import { Button } from '@/shared/components/ui/button';
 import { Skeleton } from '@/shared/components/ui/skeleton';
 
 interface GenreFilterProps {
@@ -29,19 +29,18 @@ export function GenreFilter({
 
       {genres &&
         genres.map((genre) => (
-          <Button
+          <Chip
             key={genre}
-            variant={selectedGenre === genre ? 'default' : 'outline'}
-            size="sm"
+            color={selectedGenre === genre ? 'primary' : 'default'}
+            variant={selectedGenre === genre ? 'filled' : 'outlined'}
             onClick={() =>
               selectedGenre === genre ? onSelect(null) : onSelect(genre)
             }
             disabled={isGenresPending}
             aria-disabled={isGenresPending}
             data-testid="filter-genre"
-          >
-            {genre}
-          </Button>
+            label={genre}
+          />
         ))}
     </div>
   );

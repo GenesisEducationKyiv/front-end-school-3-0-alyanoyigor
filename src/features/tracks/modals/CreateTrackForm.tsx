@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
+import Button from '@mui/material/Button';
 
 import { useGenres, useCreateTrack } from '@/features/tracks/service.hooks';
 import { CreateTrackSchema } from '@/features/tracks/validation';
@@ -9,12 +10,11 @@ import { CreateTrackDto } from '@/features/tracks/types';
 
 import { InputField } from '@/shared/components/InputField';
 import { GenreSelect } from '@/features/tracks/filters/GenreSelect';
-import { Button } from '@/shared/components/ui/button';
 import { Form, FormField } from '@/shared/components/ui/form';
 
 export function CreateTrackForm({ handleClose }: { handleClose: () => void }) {
   const { data: availableGenres = [] } = useGenres();
-  const { mutateAsync: createTrack, isPending } = useCreateTrack();
+  const { mutateAsync: createTrack } = useCreateTrack();
 
   const form = useForm<CreateTrackDto>({
     resolver: zodResolver(CreateTrackSchema),
@@ -90,23 +90,11 @@ export function CreateTrackForm({ handleClose }: { handleClose: () => void }) {
         />
 
         <div className="flex justify-end gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleClose}
-            disabled={isPending}
-            aria-disabled={isPending}
-          >
+          <Button type="button" variant="outlined" onClick={handleClose}>
             Cancel
           </Button>
-          <Button
-            type="submit"
-            disabled={isPending}
-            data-testid="submit-button"
-            aria-disabled={isPending}
-            data-loading={isPending}
-          >
-            {isPending ? 'Creating...' : 'Create Track'}
+          <Button variant="contained" type="submit" data-testid="submit-button">
+            Create Track
           </Button>
         </div>
       </form>
