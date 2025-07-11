@@ -1,8 +1,8 @@
+import Chip from '@mui/material/Chip';
 import { Music, Pause, Play } from 'lucide-react';
 
 import { useAudioPlayerStore } from '@/features/audioPlayer/store';
 import { cn } from '@/shared/lib/utils';
-import { Badge } from '@/shared/components/ui/badge';
 
 import { useTrackContext } from './TrackItemContext';
 
@@ -68,9 +68,13 @@ export function TrackText() {
       </p>
       <div className="flex gap-1 mt-1 flex-wrap">
         {track.genres.map((genre: string) => (
-          <Badge key={genre} variant="secondary" className="text-xs">
-            {genre}
-          </Badge>
+          <Chip
+            key={genre}
+            label={genre}
+            variant="filled"
+            color="secondary"
+            size="small"
+          />
         ))}
       </div>
     </div>

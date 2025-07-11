@@ -1,5 +1,5 @@
-import { Button } from '../components/ui/button';
-import ModalTrackCreate from '../../features/tracks/modals/CreatelTrackModal';
+import Button from '@mui/material/Button';
+import ModalTrackCreate from '@/features/tracks/modals/CreateTrackModal';
 
 export function Header() {
   return (
@@ -9,7 +9,9 @@ export function Header() {
       </h1>
 
       <ModalTrackCreate>
-        <Button data-testid="create-track-button">Create track</Button>
+        <Button data-testid="create-track-button" variant="contained">
+          Create track
+        </Button>
       </ModalTrackCreate>
     </div>
   );

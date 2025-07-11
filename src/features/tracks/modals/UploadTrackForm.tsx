@@ -3,9 +3,9 @@ import { Upload, X } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
+import Button from '@mui/material/Button';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Button } from '@/shared/components/ui/button';
 import {
   useDeleteTrackFile,
   useUploadTrackFile,
@@ -130,20 +130,22 @@ function UploadTrackForm({
         {track.audioFile && (
           <Button
             type="button"
-            variant="destructive"
+            startIcon={<X className="w-4 h-4" />}
+            variant="outlined"
+            color="error"
             onClick={handleDeleteFile}
           >
-            <X className="w-4 h-4" />
             Remove File
           </Button>
         )}
         <Button
+          variant="contained"
+          startIcon={<Upload className="w-4 h-4" />}
           type="submit"
           disabled={!file}
           aria-disabled={!file}
           data-testid="submit-button"
         >
-          <Upload className="w-4 h-4" />
           Upload
         </Button>
       </div>

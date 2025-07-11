@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
+import Button from '@mui/material/Button';
 
 import { getDirtyValues } from '@/shared/lib/getDirtyValues';
 import { useUpdateTrack } from '@/features/tracks/service.hooks';
@@ -12,7 +13,6 @@ import { trackFormFields } from '@/features/tracks/consts';
 import { Form, FormField } from '@/shared/components/ui/form';
 import { InputField } from '@/shared/components/InputField';
 import { GenreSelect } from '@/features/tracks/filters/GenreSelect';
-import { Button } from '@/shared/components/ui/button';
 
 interface UpdateTrackFormProps {
   track: Track;
@@ -117,6 +117,7 @@ function UpdateTrackForm({
 
         <div className="flex justify-end">
           <Button
+            variant="contained"
             type="submit"
             disabled={isPending}
             aria-disabled={isPending}

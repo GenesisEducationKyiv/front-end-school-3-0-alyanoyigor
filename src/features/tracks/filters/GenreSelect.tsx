@@ -1,9 +1,8 @@
 import { FieldError } from 'react-hook-form';
-import { Plus, X } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import Chip from '@mui/material/Chip';
 
-import { Badge } from '@/shared/components/ui/badge';
 import { FormLabel } from '@/shared/components/ui/form';
-import { Button } from '@/shared/components/ui/button';
 
 interface GenreSelectProps {
   availableGenres: string[] | undefined;
@@ -25,20 +24,14 @@ export function GenreSelect({
       <FormLabel>Genres</FormLabel>
       <div className="flex flex-wrap gap-2">
         {selectedGenres.map((genre: string) => (
-          <Badge
+          <Chip
             key={genre}
-            variant="secondary"
-            className="flex items-center gap-1"
-          >
-            {genre}
-            <button
-              type="button"
-              onClick={() => handleRemoveGenre(genre)}
-              className="hover:text-destructive cursor-pointer"
-            >
-              <X className="h-3 w-3" />
-            </button>
-          </Badge>
+            label={genre}
+            variant="filled"
+            color="primary"
+            size="small"
+            onDelete={() => handleRemoveGenre(genre)}
+          />
         ))}
       </div>
       <div className="flex flex-wrap gap-2">
@@ -46,17 +39,15 @@ export function GenreSelect({
           availableGenres
             .filter((genre) => !selectedGenres.includes(genre))
             .map((genre) => (
-              <Button
+              <Chip
                 key={genre}
-                type="button"
-                variant="outline"
-                size="sm"
+                label={genre}
+                variant="outlined"
+                color="primary"
+                size="small"
                 onClick={() => handleAddGenre(genre)}
-                className="flex items-center gap-1"
-              >
-                <Plus className="h-3 w-3" />
-                {genre}
-              </Button>
+                icon={<Plus className="h-3 w-3" />}
+              />
             ))}
       </div>
       {error && (

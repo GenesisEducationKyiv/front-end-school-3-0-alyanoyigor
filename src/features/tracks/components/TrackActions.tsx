@@ -1,9 +1,9 @@
 import { Pencil, Upload, Trash } from 'lucide-react';
+import IconButton from '@mui/material/IconButton';
 
 import UpdateTrackModal from '@/features/tracks/modals/UpdateTrackModal';
 import UploadTrackModal from '@/features/tracks/modals/UploadTrackModal';
 import DeleteTrackModal from '@/features/tracks/modals/DeleteTrackModal';
-import { Button } from '@/shared/components/ui/button';
 
 import { useTrackContext } from './TrackItemContext';
 
@@ -17,45 +17,36 @@ export function TrackActions({ genres }: TrackActionsProps) {
   return (
     <div className="flex gap-2">
       <UpdateTrackModal track={track} genres={genres}>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-muted-foreground hover:text-primary focus-within:text-primary"
+        <IconButton
           aria-label="Edit track"
           disabled={track.id.includes('optimistic')}
           aria-disabled={track.id.includes('optimistic')}
           data-testid={`edit-track-${track.id}`}
         >
           <Pencil className="w-4 h-4" />
-        </Button>
+        </IconButton>
       </UpdateTrackModal>
 
       <UploadTrackModal track={track}>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-muted-foreground hover:text-primary focus-within:text-primary"
+        <IconButton
           aria-label="Upload track"
           disabled={track.id.includes('optimistic')}
           aria-disabled={track.id.includes('optimistic')}
           data-testid={`upload-track-${track.id}`}
         >
           <Upload className="w-4 h-4" />
-        </Button>
+        </IconButton>
       </UploadTrackModal>
 
       <DeleteTrackModal track={track}>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-muted-foreground hover:text-primary focus-within:text-primary"
+        <IconButton
           aria-label="Delete track"
           disabled={track.id.includes('optimistic')}
           aria-disabled={track.id.includes('optimistic')}
           data-testid={`delete-track-${track.id}`}
         >
           <Trash className="w-4 h-4" />
-        </Button>
+        </IconButton>
       </DeleteTrackModal>
     </div>
   );
