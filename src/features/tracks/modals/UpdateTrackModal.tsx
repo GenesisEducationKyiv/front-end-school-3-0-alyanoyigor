@@ -42,7 +42,7 @@ function UpdateTrackModal({
 
         <Suspense
           fallback={
-            <div className="flex items-center justify-center h-130">
+            <div className="flex items-center justify-center h-120">
               <Loader2 className="w-5 h-5 animate-spin" />
             </div>
           }
